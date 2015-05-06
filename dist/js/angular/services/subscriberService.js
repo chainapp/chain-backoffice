@@ -4,7 +4,7 @@ this.newSubscribersByDay = function() {
   var deferred = $q.defer();
   $http({
     method: 'GET',
-    url: 'http://localhost:8081/subscribers/newSubscribersByDay',
+    url: 'http://52.17.127.121:8081/subscribers/newSubscribersByDay',
     //url: 'http://lb.qlf-waas.priv.atos.fr:8068/getArret',
     headers: {'Content-type':'application/json'}
   }).
@@ -23,7 +23,7 @@ this.newSubscribersByDay = function() {
         var deferred = $q.defer();
         $http({
             method: 'GET',
-            url: 'http://localhost:8081/subscribers',
+            url: 'http://52.17.127.121:8081/subscribers',
             //url: 'http://lb.qlf-waas.priv.atos.fr:8068/getArret',
             headers: {'Content-type':'application/json'}
         }).
@@ -43,7 +43,7 @@ this.count = function() {
   var deferred = $q.defer();
   $http({
     method: 'GET',
-    url: 'http://localhost:8081/subscribers/count',
+    url: 'http://52.17.127.121:8081/subscribers/count',
     //url: 'http://lb.qlf-waas.priv.atos.fr:8068/getArret',
     headers: {'Content-type':'application/json'}
   }).

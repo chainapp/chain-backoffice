@@ -128,11 +128,10 @@
                     </thead>
                     <tbody>
                       <tr ng-repeat="user in users">
-                       <!--  <td><a href="{{user.facebook.link}}"><img src="http://graph.facebook.com/{{user.facebook.id}}/picture?type=square" alt="User Image"/></a></td> -->
-                        <td class="pull-center"><a href="{{user.facebook.link}}"><img src="../../dist/img/user1-128x128.jpg" height="32" width="32" alt="User Image"/></a></td>
+                          <td><a href="{{user.facebook.link}}"><img src="http://graph.facebook.com/{{user.facebook.id}}/picture?type=square" alt="User Image"/></a></td>
                           <td>{{user.facebook.first_name}}</td>
                           <td>{{user.facebook.last_name}}</td>
-                          <td>{{user.facebook.gender}}</td>
+                          <td><span class="glyphicon icon-{{user.facebook.gender}}"></span>{{user.facebook.gender}}</td>
                           <td>{{user.local.email}}</td>
                           <td>{{user.creationDate}}</td>
                           <td>{{user.lastConnectionDate}}</td>
