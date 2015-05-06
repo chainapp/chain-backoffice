@@ -2,7 +2,7 @@ var express = require('express');
 var request = require('request');
 var app = express();
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/facefight');
+mongoose.connect('mongodb://52.17.127.121:27017/facefight');
 app.use(express.static('./'));
 var Twit = require('twit')
 var Facebook = require('facebook-node-sdk');
