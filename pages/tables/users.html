@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>AdminLTE 2 | Data Tables</title>
+    <title>Facefighters</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 3.3.2 -->
     <link href="../../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -29,7 +29,7 @@
     <div class="wrapper">
       
       <header class="main-header">
-        <a href="../../index2.html" class="logo"><b>Face</b>Fight</a>
+        <a href="../../index.html" class="logo"><b>Face</b>Fight</a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top" role="navigation">
           <!-- Sidebar toggle button-->
@@ -59,25 +59,24 @@
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
             <li class="header">MAIN NAVIGATION</li>
-            <li class="treeview">
-              <a href="../../index2.html">
-                <i class="fa fa-dashboard"></i> <span> Faceboard</span> <i class="fa fa-angle-left pull-right"></i>
+            <li>
+              <a href="../../index.html">
+                <i class="fa fa-dashboard"></i> <span> Faceboard</span>
               </a>
             </li>
             
-            <li class="active treeview">
+            <li class="active">
               <a href="#">
-                <i class="fa fa-table"></i> <span> Facefighters</span>
-                <i class="fa fa-angle-left pull-right"></i>
+                <i class="fa fa-users"></i> <span> Facefighters</span>
               </a>
             </li>
             <li>
               <a href="./subscribers.html">
-                <i class="fa fa-calendar"></i> <span> Facesubscribers</span>
+                <i class="fa fa-send"></i> <span> Facesubscribers</span>
               </a>
             </li>
             <li><a href="../../documentation/index.html"><i class="fa fa-book"></i> Facedoc</a></li>
-             <li><a href="http://www.facefight.com"><i class="fa fa-book"></i> Facefight-landing</a></li>
+             <li><a href="http://www.facefight-landing.elasticbeanstalk.com"><i class="fa fa-globe"></i> Facefight-landing</a></li>
           </ul>
         </section>
         <!-- /.sidebar -->
@@ -131,8 +130,8 @@
                           <td><a href="{{user.facebook.link}}"><img src="http://graph.facebook.com/{{user.facebook.id}}/picture?type=square" alt="User Image"/></a></td>
                           <td>{{user.facebook.first_name}}</td>
                           <td>{{user.facebook.last_name}}</td>
-                          <td><span class="glyphicon icon-{{user.facebook.gender}}"></span>{{user.facebook.gender}}</td>
-                          <td>{{user.local.email}}</td>
+                          <td><span class="glyphicons glyphicons-{{user.facebook.gender}}"></span>{{user.facebook.gender}}</td>
+                          <td>{{user.facebook.email}}</td>
                           <td>{{user.creationDate}}</td>
                           <td>{{user.lastConnectionDate}}</td>
                           <td>

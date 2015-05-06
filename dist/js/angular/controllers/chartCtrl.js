@@ -1,8 +1,16 @@
-appControllers.controller('chartCtrl', ['$scope','$http','userService',function ChartCtrl($scope,$http,userService) {
+appControllers.controller('chartCtrl', ['$scope','$http','userService','facebookService','twitterService','instagramService',function ChartCtrl($scope,$http,userService,facebookService,twitterService,instagramService) {
 
 $scope.title="Nouveaux utilisateurs";
 var salesChartCanvas = document.getElementById("salesChart").getContext("2d");
 var salesChart = new Chart(salesChartCanvas);
+
+
+
+twitterService.followersCount().then(function(res){
+
+    $scope.twFollowers = res.count;
+})
+
 
 
 
@@ -43,9 +51,9 @@ userService.newUsersByDay().then(function(res){
 		datasets: [
 			{
 				label: "Users",
-				fillColor: "blue",
-				strokeColor: "blue",
-				pointColor: "blue",
+				fillColor: "#3a3a3a",
+				strokeColor: "#3a3a3a",
+				pointColor: "#3a3a3a",
 				pointStrokeColor: "#c1c7d1",
 				pointHighlightFill: "#fff",
 				pointHighlightStroke: "rgb(220,220,220)",

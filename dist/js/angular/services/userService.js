@@ -5,6 +5,7 @@ this.newUsersByDay = function() {
   $http({
     method: 'GET',
     url: 'http://52.17.127.121:8081/users/newUsersByDay',
+    //url: 'http://localhost:8081/users/newUsersByDay',
     //url: 'http://lb.qlf-waas.priv.atos.fr:8068/getArret',
     headers: {'Content-type':'application/json'}
   }).
@@ -24,6 +25,7 @@ this.newUsersByDay = function() {
         $http({
             method: 'GET',
             url: 'http://52.17.127.121:8081/users',
+            //url: 'http://localhost:8081/users',
             //url: 'http://lb.qlf-waas.priv.atos.fr:8068/getArret',
             headers: {'Content-type':'application/json'}
         }).
@@ -44,6 +46,7 @@ this.count = function() {
   $http({
     method: 'GET',
     url: 'http://52.17.127.121:8081/users/count',
+    //url: 'http://localhost:8081/users/count',
     //url: 'http://lb.qlf-waas.priv.atos.fr:8068/getArret',
     headers: {'Content-type':'application/json'}
   }).
