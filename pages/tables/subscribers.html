@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>AdminLTE 2 | Data Tables</title>
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+    <!-- Bootstrap 3.3.2 -->
+    <link href="../../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!-- Font Awesome Icons -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <!-- Ionicons -->
+    <link href="http://code.ionicframework.com/ionicons/2.0.0/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+    <!-- DATA TABLES -->
+    <link href="../../plugins/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
+    <!-- Theme style -->
+    <link href="../../dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+    <!-- AdminLTE Skins. Choose a skin from the css/skins 
+         folder instead of downloading all of them to reduce the load. -->
+    <link href="../../dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body class="skin-blue" ng-app="facefight-backoffice">
+    <div class="wrapper">
+      
+      <header class="main-header">
+        <a href="../../index2.html" class="logo"><b>Face</b>Fight</a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" role="navigation">
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+        </nav>
+      </header>
+      <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+          <!-- search form -->
+          <form action="#" method="get" class="sidebar-form">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control" placeholder="Search..."/>
+              <span class="input-group-btn">
+                <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </form>
+          <!-- /.search form -->
+          <!-- sidebar menu: : style can be found in sidebar.less -->
+          <ul class="sidebar-menu">
+            <li class="header">MAIN NAVIGATION</li>
+            <li class="treeview">
+              <a href="../../index2.html">
+                <i class="fa fa-dashboard"></i> <span> Faceboard</span> <i class="fa fa-angle-left pull-right"></i>
+              </a>
+            </li>
+            
+            <li class="treeview">
+              <a href="./users.html">
+                <i class="fa fa-table"></i> <span> Facefighters</span>
+                <i class="fa fa-angle-left pull-right"></i>
+              </a>
+            </li>
+            <li class="active">
+              <a href="#">
+                <i class="fa fa-calendar"></i> <span> Facesubscribers</span>
+              </a>
+            </li>
+            <li><a href="../../documentation/index.html"><i class="fa fa-book"></i> Facedoc</a></li>
+             <li><a href="http://www.facefight.com"><i class="fa fa-book"></i> Facefight-landing</a></li>
+          </ul>
+        </section>
+        <!-- /.sidebar -->
+      </aside>
+
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            Subscribers
+            <small>facefight</small>
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Facesubscribers</li>
+          </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content" ng-controller="subscribersCtrl">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="box">
+                <div class="box-header">
+                  <h3 class="box-title">Facesubscribers</h3>
+                  <div class="pull-right">
+                      <div class="input-group">
+                        <input type="text" name="q" class="form-control form-inline" placeholder="Rechercher..."/>
+                      </div>
+                    </div>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div>
+                      <button type="button" class="btn btn-info" title="Contacter tout le monde">Contacter tout le monde</button>
+                      <button type="button" class="btn btn-info" title="Contacter la liste">Contacter la liste de participants</button>
+                    </div>
+                  <table id="subscriberTable" class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th><input type="checkbox"/>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Date de souscription</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="sub in subscribers">
+                          <td><input type="checkbox"/>
+                          <td>{{sub.name}}</td>
+                          <td>{{sub.email}}</td>
+                          <td>{{sub.registrationDate}}</td>
+                          <td>
+                            <button type="button" class="btn btn-success glyphicon glyphicon-send" title="Contacter"></button>
+                            <button type="button" class="btn btn-danger glyphicon glyphicon-remove" title="Supprimer"></button>
+                          </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div><!-- /.box-body -->
+              </div><!-- /.box -->
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </section><!-- /.content -->
+      </div><!-- /.content-wrapper -->
+      <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+          <b>Version</b> 0.0.1
+        </div>
+        <strong>Copyright &copy; 2014-2015 <a href="http://facefight.elasticbeanstalk.com">Facefight</a>.</strong> All rights reserved.
+      </footer>
+    </div><!-- ./wrapper -->
+
+    <!-- jQuery 2.1.3 -->
+    <script src="../../plugins/jQuery/jQuery-2.1.3.min.js"></script>
+    <!-- Bootstrap 3.3.2 JS -->
+    <script src="../../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <!-- DATA TABES SCRIPT -->
+    <script src="../../plugins/datatables/jquery.dataTables.js" type="text/javascript"></script>
+    <script src="../../plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
+    <!-- SlimScroll -->
+    <script src="../../plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+    <!-- FastClick -->
+    <script src='../../plugins/fastclick/fastclick.min.js'></script>
+    <!-- AdminLTE App -->
+    <script src="../../dist/js/app.min.js" type="text/javascript"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="../../dist/js/demo.js" type="text/javascript"></script>
+    <!-- page script -->
+   <!--  <script type="text/javascript">
+      $(function () {
+        $("#example1").dataTable();
+        $('#userTable').dataTable({
+          "bPaginate": true,
+          "bLengthChange": true,
+          "bFilter": false,
+          "bSort": true,
+          "bInfo": true,
+          "bAutoWidth": true
+        });
+      });
+    </script> -->
+    <!-- AngularJS -->
+    <script src="../../dist/js/angular/lib/angular.min.js" type="text/javascript"></script>
+    <script src="../../dist/js/angular/facefight-backoffice.js" type="text/javascript"></script>
+    <script src="../../dist/js/angular/controllers/subscribersCtrl.js" type="text/javascript"></script>
+    <script src="../../dist/js/angular/services/subscriberService.js" type="text/javascript"></script>
+
+  </body>
+</html>

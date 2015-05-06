@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Facefight | IC</title>
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+    <!-- Bootstrap 3.3.2 -->
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!-- Font Awesome Icons -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <!-- Ionicons -->
+    <link href="http://code.ionicframework.com/ionicons/2.0.0/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+    <!-- Theme style -->
+    <link href="../dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+    <link href="../dist/css/skins/skin-blue.min.css" rel="stylesheet" type="text/css" />
+    <link href="style.css" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body class="skin-blue fixed" data-spy="scroll" data-target="#scrollspy">
+    <div class="wrapper">
+
+      <header class="main-header">
+        <!-- Logo -->
+        <a href="../index2.html" class="logo"><b>Face</b>Fight</a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" role="navigation">
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+          </a>
+        </nav>
+      </header>
+      <!-- Left side column. contains the logo and sidebar -->
+      <aside class="main-sidebar">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar" id="scrollspy">
+
+          <!-- sidebar menu: : style can be found in sidebar.less -->
+          <ul class="nav sidebar-menu">
+            <li class="header">TABLE OF CONTENTS</li>
+            <li><a href="#introduction"><i class='fa fa-circle-o'></i> Introduction</a></li>
+            <li><a href="#authentication"><i class='fa fa-circle-o'></i> Authentication</a></li>
+            <li><a href="#match"><i class='fa fa-circle-o'></i> Match</a></li>
+            <li><a href="#notification"><i class='fa fa-circle-o'></i> Notification</a></li>
+            <li><a href="#signaling"><i class='fa fa-circle-o'></i> Signaling Server</a></li>
+          </ul>
+        </section>
+        <!-- /.sidebar -->
+      </aside>
+
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+          <h1>
+            Facefight contract of interface
+            <small>Current version 0.0.1</small>
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Documentation</li>
+          </ol>
+        </div>
+
+        <!-- Main content -->
+        <div class="content body">
+          <div class="callout callout-warning no-margin">
+            <h4>Warning!</h4>
+            This contract of interface is under development. Some information may change as the progress of creating the documentation continues.
+          </div>
+<section id='introduction'>
+
+      <h2 class='page-header'><a href="#introduction">Introduction</a></h2>
+      <p class='lead'>
+        
+      Contract of interface for the Facefight backend
+      Entry points are, given the environment, the following:
+      </p>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="box box-solid box-default">
+          <div class="box-header with-border">
+            <h3 class="box-title">DEV</h3>
+          </div>
+          <div class="box-body">
+            Backend : <a>http://facefight.elasticbeanstalk.com</a>
+            Signaling server : <a>http://facefight-signaling.elasticbeanstalk.com</a>
+          </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="box box-solid box-success">
+          <div class="box-header with-border">
+            <h3 class="box-title">QLF</h3>
+          </div>
+          <div class="box-body">
+            Backend : <a>http://facefight-qlf.elasticbeanstalk.com</a>
+            Signaling server : <a>http://facefight-signaling-qlf.elasticbeanstalk.com</a>
+          </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="box box-solid box-danger">
+          <div class="box-header with-border">
+            <h3 class="box-title">PROD</h3>
+          </div>
+          <div class="box-body">
+            Backend : <a>http://facefight.com</a>
+            Signaling server : <a>http://facefight-signaling.com</a>
+          </div>
+          </div>
+        </div>
+      </div>
+      <div class="callout callout-info no-margin">
+        <h4>Important</h4>
+        Please note that every request has to be addressed to the normal backend of Facefight. The signaling server is only used in order to exchange metadata between users before and during a fight. Thus embedded applications should only connect to the signaling server after having found a mmatch, in order to establish a socket connection with it. The technology used behind the signaling server is the socket.io library from nodeJs. Requests and upgraded connections are handled through Nginx.
+      </div>
+      <hr>
+      Regarding the HTTP response status, the following rules apply :
+
+      <ul>
+        <li><strong>HTTP 200: </strong>Sent in all cases where the request and its parameters are correct, and the request could have been processed normally, even if a non-expected behaviour had happened.</li>
+        <li><strong>HTTP 400: </strong>Sent in all cas where there is a missing entry parameter or a resource that finally does not exist.</li>
+        <li><strong>HTTP 500: </strong>Internal error. Should, off course, not happen !  :-)</li>
+      </ul>
+      <hr>
+      
+</section><!-- /#introduction -->
+
+          <!-- ============================================================= -->
+
+<section id='authentication'>
+  <h2 class='page-header'><a href="#authentication">Authentication</a><small>Base route : <strong>/auth</strong></small></h2>
+  <p class='lead'>
+   Entry points for all the users authentication logic on Facefight.
+  </p>
+  <div class="callout callout-warning">
+            <h4>Warning!</h4>
+            Users authentication is a pre-requisite for all others routes of the backend. I.e. user's session must contains authentication informations, otherwise requests will be redrected to the main login page.
+          </div>
+  <div class='row'>
+    <div class='col-sm-12'>
+      <div class='box box-primary'>
+        <div class='box-header with-border'>
+          <h3 class='box-title'><strong>GET /auth/facebook</strong></h3>
+          <span class='label label-primary pull-right'><i class='fa fa-html5'></i></span>
+        </div><!-- /.box-header -->
+        <div class='box-body'>
+          <p>Entry point in order to initiate a Facebook authentication.
+          This method is called at the very beginning of the app launch. When requesting this route, the backend will be redirected to the Facebook app or web page in order for user to enter its facebook login informations.
+          Once the login done, Facebook will redirect the frontend to the callback URL.</p>
+
+          <h4>Entry arguments</h4>
+          <div class="table-responsive">
+                    <table class="table no-margin">
+                      <thead>
+                        <tr>
+                          <th>Argument</th>
+                          <th>Type</th>
+                          <th>Value</th>
+                          <th>Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td colspan="4">No entry argument for this method</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+          <h4>Response format</h4>
+          No response is returned, but the request is redirected to the page <a>https://www.facebook.com/dialog/oauth</a>
+        </div><!-- /.box-body -->
+      </div><!-- /.box -->
+    </div><!-- /.col -->
+    <div class='col-sm-12'>
+      <div class='box box-primary'>
+        <div class='box-header with-border'>
+          <h3 class='box-title'><strong>GET /auth/facebook/callback</strong></h3>
+          <span class='label label-primary pull-right'><i class='fa fa-html5'></i></span>
+        </div><!-- /.box-header -->
+        <div class='box-body'>
+          <p>Callback URL called by Facebook once the login has been done.
+          This method is called by Facebook once the login has been done. The backend sends back a profile page that contains the user's information. <strong>The profile page rendered by the backend has to be ignored as it is only for tests purposes for the moment.</strong> The main advantage of this method is that once called, it enrichs the session with the serialized user object.</p>
+
+          <h4>Entry arguments</h4>
+          <div class="table-responsive">
+                    <table class="table no-margin">
+                      <thead>
+                        <tr>
+                          <th>Argument</th>
+                          <th>Type</th>
+                          <th>Value</th>
+                          <th>Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td colspan="4">No entry argument for this method : directly enriched by Facebook.</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+          <h4>Response format</h4>
+          No response is returned, but the session is enriched with user's informations.
+
+        </div><!-- /.box-body -->
+      </div><!-- /.box -->
+    </div><!-- /.col -->
+  </div><!-- /.row -->
+</section>
+
+
+<section id='match'>
+  <h2 class='page-header'><a href="#match">Match</a><small>Base route : <strong>/match</strong></small></h2>
+  <p class='lead'>
+   Entry points for all match related logic.
+  </p>
+  <div class='row'>
+    <div class='col-sm-12'>
+      <div class='box box-primary'>
+        <div class='box-header with-border'>
+          <h3 class='box-title'><strong>GET /match/search/<i>:userId</i></strong></h3>
+          <span class='label label-primary pull-right'><i class='fa fa-html5'></i></span>
+        </div><!-- /.box-header -->
+        <div class='box-body'>
+          <p>Entry point for the matchmaking logic.
+         This method should be called when the user clicks on the <button type="button" class="btn btn-info">Facefight the World</button> button on the embedded application.
+         The request starts a research for matching adversaries. On the back-end side, it records the current user to a Redis list corresponding to its current category. Then it subscribes to a key being the user ID. Once the user ID has been removed from the list by a matching adversary, the request is notified and the front-end gets the response.
+         TODO : set a timeout on this method, as for the moment it searches forever.</p>
+
+          <h4>Entry arguments</h4>
+          <div class="table-responsive">
+                    <table class="table no-margin">
+                      <thead>
+                        <tr>
+                          <th>Argument</th>
+                          <th>Type</th>
+                          <th>Value</th>
+                          <th>Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><strong>userId</strong></td>
+                          <td>String</td>
+                          <td>userId as set  in the session object by the authentication method</td>
+                          <td>Should always be present insofar as every methods are only available if authenticated</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+          <h4>Response format</h4>
+          <code class="language-json" data-lang="json">
+            {
+                    "_id" : "55100a442eb33fc41bdb5b60",
+                    "ranking" : {
+                            "category" : "Novice",
+                            "score" : 0,
+                            "defeats" : 0,
+                            "draws" : 0,
+                            "victories" : 0,
+                            "matches" : 0
+                    },
+                    "local" : {
+                            "password" : "$2a$08$839jtb/nMfIuCnph.Weca.yKASYH33Gs7LbzxcWamDGTL8rsPY/T2",
+                            "email" : "p.braun@gmail.com"
+                    },
+                    "__v" : 0
+            }
+          </code>
+        </div><!-- /.box-body -->
+      </div><!-- /.box -->
+    </div><!-- /.col -->
+    <div class='col-sm-12'>
+      <div class='box box-primary'>
+        <div class='box-header with-border'>
+          <h3 class='box-title'><strong>POST /match/end</strong></h3>
+          <span class='label label-primary pull-right'><i class='fa fa-html5'></i></span>
+        </div><!-- /.box-header -->
+        <div class='box-body'>
+          <p>Request indicating the end of a match. This request shoulld be triggered on both side given the following circumstances :
+            <ul>
+              <li><strong>Current user has lost :</strong> the current user has lost the fight by smiling or looking somewhere else and has sent the socket event to its adversary in order to indicate him the end of the fight.</li>
+              <li><strong>Current user has won :</strong> the current user has won and has received the socket event indicating that its adversary had lost.</li>
+            </ul>
+            This request aims at setting up all the details regarding the end of a match : win/lost (although frontends know already), numbber of facecoins won, possible complete of user challenges, fight duration, etc.
+          </p>
+
+          <h4>Entry arguments</h4>
+          <div class="table-responsive">
+                    <table class="table no-margin">
+                      <thead>
+                        <tr>
+                          <th>Argument</th>
+                          <th>Type</th>
+                          <th>Value</th>
+                          <th>Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td colspan="4">A json object passed into the request  body and containing the following attributes :</td>
+                        </tr>
+                         <tr>
+                          <td><strong>user</strong></td>
+                          <td>String</td>
+                          <td>userId of the current user as set  in the session object by the authentication method</td>
+                          <td>Should always be present insofar as every methods are only available if authenticated</td>
+                        </tr>
+                        <tr>
+                          <td><strong>adversary</strong></td>
+                          <td>String</td>
+                          <td>userId of the adversary user as retrieved by the /match/search method</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td><strong>date</strong></td>
+                          <td>Datetime</td>
+                          <td>Date and time hen the match began</td>
+                          <td>example : "2015-03-13 20:44:00"</td>
+                        </tr>
+                        <tr>
+                          <td><strong>duration</strong></td>
+                          <td>Integer</td>
+                          <td>Duration of the fight in seconds</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td><strong>result</strong></td>
+                          <td>String in ('victory','defeat','draw')</td>
+                          <td>Result for the current user</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td><strong>type</strong></td>
+                          <td>String in ('friends','world')</td>
+                          <td>Type of the fight</td>
+                          <td></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+          <h4>Response format</h4>
+          The returned response represents the json version of the ended match object.
+          <code class="language-json" data-lang="json">
+            {
+                  "_id" : "5510073e2f1cc91434d49a72",
+                  "date" : "2015-03-13T18:44:00Z",
+                  "duration" : 34,
+                  "result" : "defeat",
+                  "type" : "friends",
+                  "stake" : {
+                          "value" : "beer",
+                          "type" : "bet"
+                  },
+                  "points" : 200,
+                  "score" : 1200,
+                  "adversary" : {
+                          "user_ref" : "5503492c382a52dc2760151b",
+                          "category" : "Novice"
+                  },
+                  "user" : {
+                          "user_ref" : "55034927382a52dc2760151a",
+                          "category" : "Novice"
+                  },
+                  "__v" : 0
+          }
+          </code>
+          The returned object has the following attributes:
+          <table class="table no-margin">
+                      <thead>
+                        <tr>
+                          <th>Argument</th>
+                          <th>Type</th>
+                          <th>Value</th>
+                          <th>Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                         <tr>
+                          <td><strong>_id</strong></td>
+                          <td>String</td>
+                          <td>Identifier of the match that has been done</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td><strong>date</strong></td>
+                          <td>Datetime</td>
+                          <td>Beginning date of the match</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td><strong>result</strong></td>
+                          <td>String in ('victory','defeat','draw')</td>
+                          <td>Result for the current user</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td><strong>duration</strong></td>
+                          <td>Integer</td>
+                          <td>Duration of the fight in seconds</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td><strong>type</strong></td>
+                          <td>String in ('friends','world')</td>
+                          <td>Type of the match, being a match with a friend or a facefight the world</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td><strong>stake</strong></td>
+                          <td>Object</td>
+                          <td>Stake of the match, if specified</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td><strong>points</strong></td>
+                          <td>Integer</td>
+                          <td>Points earned/lost by the current user during the match</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td><strong>score</strong></td>
+                          <td>Integer</td>
+                          <td>New score of the user</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td><strong>adversary</strong></td>
+                          <td>Object</td>
+                          <td>Object being the adversary for the current user during the match, contains two attributes : userId and current category</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td><strong>user</strong></td>
+                          <td>Object</td>
+                          <td>Object being the current user, contains two attributes : userId and current category</td>
+                          <td></td>
+                        </tr>
+                      </tbody>
+                    </table>
+        </div><!-- /.box-body -->
+      </div><!-- /.box -->
+    </div><!-- /.col -->
+  </div><!-- /.row -->
+</section>
+
+<section id='notification'>
+  <h2 class='page-header'><a href="#notification">Notification</a><small>Base route : <strong>/notification</strong></small></h2>
+  <p class='lead'>
+   Entry points for all notifications (push inapp) related logic.
+  </p>
+  <div class='row'>
+    <div class='col-sm-12'>
+      <div class='box box-primary'>
+        <div class='box-header with-border'>
+          <h3 class='box-title'><strong>GET /notification/enable/<i>:token</i></strong></h3>
+          <span class='label label-primary pull-right'><i class='fa fa-html5'></i></span>
+        </div><!-- /.box-header -->
+        <div class='box-body'>
+          <p>Entry point for enabling the push inapp notifications on the current device.
+        This method should be called at the initialisation step of the application, when it asks user for the right to send him push inapp notifications.</p>
+
+          <h4>Entry arguments</h4>
+          <div class="table-responsive">
+                    <table class="table no-margin">
+                      <thead>
+                        <tr>
+                          <th>Argument</th>
+                          <th>Type</th>
+                          <th>Value</th>
+                          <th>Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><strong>token</strong></td>
+                          <td>String</td>
+                          <td>Device token to which the push inapp notifications will be sent.</td>
+                          <td></td>
+                        </triggered>
+                      </tbody>
+                    </table>
+                  </div>
+          <h4>Response format</h4>
+          <code class="language-json" data-lang="json">
+            Code 200 + notifications enabled if all OK.
+            Code 500 + user not found or token not provided.
+          </code>
+        </div><!-- /.box-body -->
+      </div><!-- /.box -->
+    </div><!-- /.col -->
+    <div class='col-sm-12'>
+      <div class='box box-primary'>
+        <div class='box-header with-border'>
+          <h3 class='box-title'><strong>GET /notification/disable</strong></h3>
+          <span class='label label-primary pull-right'><i class='fa fa-html5'></i></span>
+        </div><!-- /.box-header -->
+        <div class='box-body'>
+          <p>This method should be called when the user chooses to disable the notification system from facefight.</p>
+          </p>
+
+          <h4>Entry arguments</h4>
+          <div class="table-responsive">
+                    <table class="table no-margin">
+                      <thead>
+                        <tr>
+                          <th>Argument</th>
+                          <th>Type</th>
+                          <th>Value</th>
+                          <th>Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td colspan="4">No entry argument</td>
+                        </tr>
+                         
+                      </tbody>
+                    </table>
+                  </div>
+          <h4>Response format</h4>
+           Code 200 + notifications disabled if all OK.
+            Code 500 + user not found or token not provided.
+        </div><!-- /.box-body -->
+      </div><!-- /.box -->
+    </div><!-- /.col -->
+  </div><!-- /.row -->
+</section>
+
+<section id='signaling'>
+  <h2 class='page-header'><a href="#signaling">Signaling</a><small>Base route : <strong>/</strong></small></h2>
+  <p class='lead'>
+   Entry points for all the signaling done before and during a fight. Caution the host is not the same as for regular requests.
+  </p>
+  <div class='row'>
+    <div class='col-sm-12'>
+      <div class='box box-primary'>
+        <div class='box-header with-border'>
+          <h3 class='box-title'><strong>IN EVENTS</strong></h3>
+          <span class='label label-primary pull-right'><i class='fa fa-html5'></i></span>
+        </div><!-- /.box-header -->
+        <div class='box-body'>
+          <p>Lists all events possibly emitted by the signaling server, and which has to be caught and processed on the embedded application' side.</p>
+
+          <h4>In events</h4>
+          <div class="table-responsive">
+                    <table class="table no-margin">
+                      <thead>
+                        <tr>
+                          <th>Event name</th>
+                          <th>Description</th>
+                          <th>Associated data</th>
+                          <th>Action to trigger on the front side</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><strong>created_fight</strong></td>
+                          <td>Event indicating to the current user that he is the first to have created the fight channel.</td>
+                          <td>A json object containing the following attributes:
+                            <ul>
+                              <li><strong>content: </strong>Welcoming message from the signaling server</li>
+                              <li><strong>room: </strong>Room identifier (should be the fight ID obtained when calling the /match/search method)</li>
+                              <li><strong>socket: </strong>Current socket identifier</li>
+                            </ul>
+                          </td>
+                          <td>None</td>
+                        </tr>
+                        <tr>
+                          <td><strong>joined_fight</strong></td>
+                          <td>Event indicating to the current user that he has successfully joined the fight.</td>
+                          <td>A json object containing the following attributes:
+                            <ul>
+                              <li><strong>content: </strong>Welcoming message from the signaling server</li>
+                              <li><strong>room: </strong>Room identifier</li>
+                              <li><strong>socket: </strong>Current socket identifier</li>
+                            </ul>
+                          </td>
+                          <td>None</td>
+                        </tr>
+                        <tr>
+                          <td><strong>full_fight</strong></td>
+                          <td>Event indicating to the current user the room he is trying to join is already full. This is  an error case that shoulld not happen.</td>
+                          <td>A json object containing the following attributes:
+                            <ul>
+                              <li><strong>content: </strong>Error message from the signaling server</li>
+                              <li><strong>room: </strong>Room identifier</li>
+                              <li><strong>socket: </strong>Current socket identifier</li>
+                            </ul>
+                          </td>
+                          <td>Throw an error, indicate the user there has been a problem</td>
+                        </tr>
+                        <tr>
+                          <td><strong>adversary_connected</strong></td>
+                          <td>Event indicating to the current user that his adversary has connected the fight (i.e. the channel prrivate room). Automatically triggered by the signaling server when the user is the second one to join the fight. This is done in order to inform the waiting user that the opponent is now here.</td>
+                          <td>A json object containing the following attributes:
+                            <ul>
+                              <li><strong>content: </strong>Message from the signaling server</li>
+                              <li><strong>room: </strong>Room identifier</li>
+                              <li><strong>socket: </strong>Adversary socket identifier</li>
+                            </ul>
+                          </td>
+                          <td>Inform the user his adversary is connected to the fight, then pass on to the calibrating phase.</td>
+                        </tr>
+                        <tr>
+                          <td><strong>connected_video</strong></td>
+                          <td>Event indicating to the current user that his adversary has connected his video on the remote device. This event should be send as soon as the video of the user is on, i.e. when Face analysis SDK begins to detect the video.</td>
+                          <td>A json object containing the following attributes:
+                            <ul>
+                              <li><strong>content: </strong>Message from the signaling server</li>
+                              <li><strong>room: </strong>Room identifier</li>
+                              <li><strong>socket: </strong>Adversary socket identifier</li>
+                            </ul>
+                          </td>
+                          <td>None</td>
+                        </tr>
+                        <tr>
+                          <td><strong>user_ready</strong></td>
+                          <td>Event indicating to the current user that his adversary is fully ready to fight, i.e. the remote device is connected to the private channel, the video is connected, the Face analysis SDK is now analyzing the frames and the fight can begin.</td>
+                          <td>A json object containing the following attributes:
+                            <ul>
+                              <li><strong>content: </strong>Message from the signaling server</li>
+                              <li><strong>room: </strong>Room identifier</li>
+                              <li><strong>socket: </strong>Adversary socket identifier</li>
+                            </ul>
+                          </td>
+                          <td>Starts the counter 3,2,1... and display remote video of the adversary</td>
+                        </tr>
+                        <tr>
+                          <td><strong>user_lost</strong></td>
+                          <td>Event indicating to the current user that his adversary hhas lost, i.e. a smile has been detected by the SDK on the remote video.</td>
+                          <td>A json object containing the following attributes:
+                            <ul>
+                              <li><strong>content: </strong>Message from the signaling server</li>
+                              <li><strong>room: </strong>Room identifier</li>
+                              <li><strong>socket: </strong>Adversary socket identifier</li>
+                            </ul>
+                          </td>
+                          <td>Take the finish picture, stop the fight then send the ending match request.</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+         
+        </div><!-- /.box-body -->
+      </div><!-- /.box -->
+    </div><!-- /.col -->
+    <div class='col-sm-12'>
+      <div class='box box-primary'>
+        <div class='box-header with-border'>
+          <h3 class='box-title'><strong>OUT EVENTS</strong></h3>
+          <span class='label label-primary pull-right'><i class='fa fa-html5'></i></span>
+        </div><!-- /.box-header -->
+        <div class='box-body'>
+          <p>Lists all eventswhiwh have to be send to the signaling server from the client, i.e. the embedded application.</p>
+
+          <h4>In events</h4>
+          <div class="table-responsive">
+                    <table class="table no-margin">
+                      <thead>
+                        <tr>
+                          <th>Event name</th>
+                          <th>Description</th>
+                          <th>Associated data</th>
+                          <th>When to trigger ?</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><strong>join_fight</strong></td>
+                          <td>Event indicating to the signaling server that the user needs to create/join the fight identified by the room namme in the associated data. The server should respond with one of the three events : created_fight, joined_fight, full_fight.</td>
+                          <td>A json object containing the following attributes:
+                            <ul>
+                              <li><strong>room: </strong>Room identifier (should be the fight ID obtained when calling the /match/search method)</li>
+                            </ul>
+                          </td>
+                          <td>Just after the /match/search request has successfully ended, when local device fetches the fight identifier</td>
+                        </tr>
+                        
+                        <tr>
+                          <td><strong>connected_video</strong></td>
+                          <td>Indicates to the signaling server and the adversary that the video is now connected on the local device, and that the calibration phase should start.</td>
+                          <td>None.
+                          </td>
+                          <td>As soon as the face analysis SDK detects the first frame of the local video.</td>
+                        </tr>
+                        <tr>
+                          <td><strong>user_ready</strong></td>
+                          <td>Indicates to the signaling server and the adversary that the video is now calibrated and that the fight could start regarding the local user.</td>
+                          <td>None
+                          </td>
+                          <td>As soon as the face analysis SDK starts to analyse the frames.</td>
+                        </tr>
+                        <tr>
+                          <td><strong>user_lost</strong></td>
+                          <td>Indicates to the signaling server and the adversary that the user has lost by smiling or looking elsewhere.</td>
+                          <td>
+                          </td>
+                          <td>When the corresponding event is caught by the face analysis SDK.</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+         
+        </div><!-- /.box-body -->
+      </div><!-- /.box -->
+    </div>
+    
+  </div><!-- /.row -->
+</section>
+ 
+          
+        </div><!-- /.content -->
+      </div><!-- /.content-wrapper -->
+
+      <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+          <b>Version</b> 0.0.1
+        </div>
+        <strong>Copyright &copy; 2014-2015 <a href="http://facefight.elasticbeanstalk.com">Facefight</a>.</strong> All rights reserved.
+      </footer>
+
+    </div><!-- ./wrapper -->
+
+    <!-- jQuery 2.1.3 -->
+    <script src="../plugins/jQuery/jQuery-2.1.3.min.js"></script>
+    <!-- Bootstrap 3.3.2 JS -->
+    <script src="../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <!-- FastClick -->
+    <script src='../plugins/fastclick/fastclick.min.js'></script>
+    <!-- AdminLTE App -->
+    <script src="../dist/js/app.min.js" type="text/javascript"></script>
+    <!-- SlimScroll 1.3.0 -->
+    <script src="../plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+    <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+    <script src="docs.js"></script>
+  </body>
+</html>
