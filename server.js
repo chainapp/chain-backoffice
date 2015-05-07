@@ -2,7 +2,8 @@ var express = require('express');
 var request = require('request');
 var app = express();
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://52.17.127.121:27017/facefight');
+//mongoose.connect('mongodb://52.17.127.121:27017/facefight');
+mongoose.connect('mongodb://localhost:27017/facefight');
 app.use(express.static('./'));
 var Twit = require('twit')
 var Facebook = require('facebook-node-sdk');
@@ -20,6 +21,44 @@ var T = new Twit({
   , access_token:         '2982644231-5DfibM9TzYX9cKby0xRxOVFYX6t00bKtFz6RScB'
   , access_token_secret:  'AAHZzex4QnOBSM9StDt7HN3D13uUJYPYTfKz5OOhkWEI5'
 })
+var nodemailer = require('nodemailer');
+
+// create reusable transporter object using SMTP transport
+var transporter = nodemailer.createTransport("SMTP",{
+    service: 'Gmail',
+    auth: {
+        user: 'doyoufacefight@gmail.com',
+        pass: 'fac3fight'
+    }
+});
+
+// NB! No need to recreate the transporter object. You can use
+// the same transporter object for all e-mails
+
+// setup e-mail data with unicode symbols
+var mailOptions = {
+    from: 'Facefight ✔ <doyoufacefight@gmail.com>', // sender address
+    to: 'louis.stockreisser@gmail.com', // list of receivers
+    subject: 'Hello ✔', // Subject line
+    text: 'Hello world ✔', // plaintext body
+    html: '<b>Hello world ✔</b>' // html body
+};
+
+
+app.get('/notify',function(req,res){
+
+// send mail with defined transport object
+transporter.sendMail(mailOptions, function(error, info){
+    if(error){
+        console.log(error);
+    }else{
+        console.log('Message sent: ' + info.response);
+    }
+});
+
+})
+
+
 
 
 var userSchema = mongoose.Schema({
