@@ -2,24 +2,39 @@ var express = require('express');
 var request = require('request');
 var app = express();
 var mongoose = require('mongoose');
-//mongoose.connect('mongodb://52.17.127.121:27017/facefight');
-mongoose.connect('mongodb://localhost:27017/facefight');
+var config = require('./config/config');
+mongoose.connect(config.mongo.url_dev);
 app.use(express.static('./'));
-var Twit = require('twit')
+var path = require('path');
+var Twit = require('twit');
 var Facebook = require('facebook-node-sdk');
 var ig = require('instagram-node').instagram();
+var ejs = require('ejs');
+var fs = require('fs');
+
+ejs.open = '{{';
+ejs.close = '}}';   
+
+app.set('views', path.join(__dirname, 'templates'));
+app.set('view engine', 'ejs');
  
 // Every call to `ig.use()` overrides the `client_id/client_secret` 
 // or `access_token` previously entered if they exist. 
-ig.use({ client_id: '1540e90cb61e49e68126fba704960dc9',
-         client_secret: '4be769b2460c4cc2bdc791ff03222e4f' });
-var facebook = new Facebook({ appId: '940317362659855', secret: '407d1ca9220de0cabb69298424bb0868' }).setAccessToken('940317362659855|407d1ca9220de0cabb69298424bb0868');;
+ig.use({ 
+    client_id: config.instagram.client_id,
+    client_secret: config.instagram.client_secret
+});
+
+var facebook = new Facebook({ 
+    appId: config.facebook.appId, 
+    secret: config.facebook.secret 
+}).setAccessToken('940317362659855|407d1ca9220de0cabb69298424bb0868');;
 
 var T = new Twit({
-    consumer_key:         'KUV58xsSCCzfiV7UZLJXXehCa'
-  , consumer_secret:      'sQIbBuI835JkLzWTe4LS60Xho5rd7EiPfK4gN5thAZlxn5DtT8'
-  , access_token:         '2982644231-5DfibM9TzYX9cKby0xRxOVFYX6t00bKtFz6RScB'
-  , access_token_secret:  'AAHZzex4QnOBSM9StDt7HN3D13uUJYPYTfKz5OOhkWEI5'
+    consumer_key:         config.twitter.consumer_key
+  , consumer_secret:      config.twitter.consumer_secret
+  , access_token:         config.twitter.access_token
+  , access_token_secret:  config.twitter.access_token_secret
 })
 var nodemailer = require('nodemailer');
 
@@ -27,8 +42,8 @@ var nodemailer = require('nodemailer');
 var transporter = nodemailer.createTransport("SMTP",{
     service: 'Gmail',
     auth: {
-        user: 'doyoufacefight@gmail.com',
-        pass: 'fac3fight'
+        user: config.mailer.auth.user,
+        pass: config.mailer.auth.pass
     }
 });
 
@@ -37,7 +52,7 @@ var transporter = nodemailer.createTransport("SMTP",{
 
 // setup e-mail data with unicode symbols
 var mailOptions = {
-    from: 'Facefight ✔ <doyoufacefight@gmail.com>', // sender address
+    from: config.mailer.defaultFromAddress, // sender address
     to: 'louis.stockreisser@gmail.com', // list of receivers
     subject: 'Hello ✔', // Subject line
     text: 'Hello world ✔', // plaintext body
@@ -45,16 +60,42 @@ var mailOptions = {
 };
 
 
-app.get('/notify',function(req,res){
+app.get('/notify/:tosend/:to',function(req,res){
+
+
+//Get email template path
+    var tosend = req.params.tosend
+    var template = process.cwd() + '/templates/' +tosend+'.ejs';
+    var content = this.content;
+    var to = req.params.to;
+    var subject = 'News from Facefight ✔';
+
+    // Use fileSystem module to read template file
+
+    fs.readFile(template, 'utf8', function (err, file){
+        if(err) return callback (err);
+
+        var html = ejs.render(file, content);
+        
+        //ejs.render(file, content); returns a string that will set in mailOptions
+
+        var mailOptions = {
+            from: config.mailer.defaultFromAddress,
+            to: to,
+            subject: subject,
+            html: html
+        };
+        transporter.sendMail(mailOptions, function (err, info){
+            // If a problem occurs, return callback with the error
+            if(err) return console.log(err);
+            console.log(info);
+            res.writeHead(200, {"Content-Type": "application/json"});
+            res.end(JSON.stringify(info));
+        });
+    });
+
 
 // send mail with defined transport object
-transporter.sendMail(mailOptions, function(error, info){
-    if(error){
-        console.log(error);
-    }else{
-        console.log('Message sent: ' + info.response);
-    }
-});
 
 })
 
