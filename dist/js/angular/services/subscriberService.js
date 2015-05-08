@@ -66,7 +66,7 @@ this.notify = function(user, mail, title, content) {
   $http({
     method: 'POST',
     //url: 'http://localhost:8081/notify/news_mail/'+mail,
-    url: 'http://52.17.127.121:8081/subscribers/count',
+    url: 'http://52.17.127.121:8081/notify/news_mail/'+mail,
     //url: 'http://lb.qlf-waas.priv.atos.fr:8068/getArret',
     headers: {'Content-type':'application/json'},
     data: {user:user,title:title,content:content}
