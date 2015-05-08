@@ -3,7 +3,7 @@ var request = require('request');
 var app = express();
 var mongoose = require('mongoose');
 var config = require('./config/config');
-mongoose.connect(config.mongo.url_dev);
+mongoose.connect(config.mongo.url_prod);
 app.use(express.static('./'));
 var path = require('path');
 var Twit = require('twit');
@@ -14,6 +14,8 @@ var fs = require('fs');
 
 ejs.open = '{{';
 ejs.close = '}}';   
+
+app.use(express.bodyParser());
 
 app.set('views', path.join(__dirname, 'templates'));
 app.set('view engine', 'ejs');
@@ -60,22 +62,24 @@ var mailOptions = {
 };
 
 
-app.get('/notify/:tosend/:to',function(req,res){
+app.post('/notify/:tosend/:to',function(req,res){
 
 
 //Get email template path
+    var jsonBody = req.body;
+    console.log(jsonBody);
     var tosend = req.params.tosend
-    var template = process.cwd() + '/templates/' +tosend+'.ejs';
+    var template = process.cwd() + '/src/templates/' +tosend+'.ejs';
     var content = this.content;
     var to = req.params.to;
-    var subject = 'News from Facefight ✔';
+    var subject = 'Hello '+req.body.user+', news from Facefight ✔';
 
     // Use fileSystem module to read template file
 
     fs.readFile(template, 'utf8', function (err, file){
-        if(err) return callback (err);
+        if(err) return console.log(err);
 
-        var html = ejs.render(file, content);
+        var html = ejs.render(file, {title:jsonBody.title, content:jsonBody.content});
         
         //ejs.render(file, content); returns a string that will set in mailOptions
 
