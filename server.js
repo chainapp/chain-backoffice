@@ -15,6 +15,8 @@ var fs = require('fs');
 ejs.open = '{{';
 ejs.close = '}}';   
 
+app.use(express.bodyParser());
+
 app.set('views', path.join(__dirname, 'templates'));
 app.set('view engine', 'ejs');
  
@@ -60,22 +62,24 @@ var mailOptions = {
 };
 
 
-app.get('/notify/:tosend/:to',function(req,res){
+app.post('/notify/:tosend/:to',function(req,res){
 
 
 //Get email template path
+    var jsonBody = req.body;
+    console.log(jsonBody);
     var tosend = req.params.tosend
     var template = process.cwd() + '/src/templates/' +tosend+'.ejs';
     var content = this.content;
     var to = req.params.to;
-    var subject = 'News from Facefight ✔';
+    var subject = 'Hello '+req.body.user+', news from Facefight ✔';
 
     // Use fileSystem module to read template file
 
     fs.readFile(template, 'utf8', function (err, file){
         if(err) return console.log(err);
 
-        var html = ejs.render(file, content);
+        var html = ejs.render(file, {title:jsonBody.title, content:jsonBody.content});
         
         //ejs.render(file, content); returns a string that will set in mailOptions
 
