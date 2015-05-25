@@ -1,8 +1,9 @@
-appControllers.controller('chartCtrl', ['$scope','$http','userService','facebookService','twitterService','instagramService',function ChartCtrl($scope,$http,userService,facebookService,twitterService,instagramService) {
+appControllers.controller('chartCtrl', ['$scope','$http','userService','facebookService','twitterService','instagramService','eventService',function ChartCtrl($scope,$http,userService,facebookService,twitterService,instagramService,eventService) {
 
 $scope.title="Nouveaux utilisateurs";
 var salesChartCanvas = document.getElementById("salesChart").getContext("2d");
 var salesChart = new Chart(salesChartCanvas);
+$scope.events = [];
 
 
 
@@ -18,6 +19,10 @@ facebookService.likesCount().then(function(res){
 })
 
 
+eventService.fetch().then(function(res){
+
+    $scope.events = res;
+})
 
 
 //Creation du  graphique des nouveaux utilisateurs par jour

@@ -3,7 +3,7 @@ var request = require('request');
 var app = express();
 var mongoose = require('mongoose');
 var config = require('./config/config');
-mongoose.connect(config.mongo.url_prod);
+mongoose.connect(config.mongo.url_dev);
 app.use(express.static('./'));
 var path = require('path');
 var Twit = require('twit');
@@ -61,6 +61,17 @@ var mailOptions = {
     html: '<b>Hello world ✔</b>' // html body
 };
 
+var eventSchema = mongoose.Schema({
+
+    type        : String,
+    title     : String,
+    date         : Date,
+    details     : String
+
+});
+
+var eventModel = mongoose.model('event', eventSchema);
+
 
 app.post('/notify/:tosend/:to',function(req,res){
 
@@ -93,8 +104,17 @@ app.post('/notify/:tosend/:to',function(req,res){
             // If a problem occurs, return callback with the error
             if(err) return console.log(err);
             console.log(info);
-            res.writeHead(200, {"Content-Type": "application/json"});
-            res.end(JSON.stringify(info));
+
+            var e = new eventModel();
+            e.type = "send";
+            e.title = "Envoi de mail : 1 Facesubscriber"
+            e.date = new Date();
+            e.details = content;
+            eventModel.save(function(err,savedEvent){
+                res.writeHead(200, {"Content-Type": "application/json"});
+                res.end(JSON.stringify(info)); 
+            })    
+           
         });
     });
 
@@ -149,6 +169,7 @@ var subscriberSchema = mongoose.Schema({
 });
 
 var subscriberModel = mongoose.model('subscriber', subscriberSchema);
+
 
 
 app.get('/users/newUsersByDay',function(req,res){
@@ -272,11 +293,25 @@ app.get('/instagram/followers/count',function(req,res){
     request.post({ url: accessTokenUrl, form: params, json: true }, function(error, response, body) {
        console.log(body);
    });
+
+
  
       
 
 
 })
 
+
+app.get('/events',function(req,res){
+
+eventModel.find({}, function (err, data) {
+        if (err) { throw err; }
+
+        res.writeHead(200, {"Content-Type": "application/json"});
+        res.end(JSON.stringify(data));
+    });
+
+
+})
 
 app.listen(process.env.PORT || 8081);
