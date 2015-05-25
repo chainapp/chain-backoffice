@@ -24,6 +24,15 @@ eventService.fetch().then(function(res){
     $scope.events = res;
 })
 
+$scope.getEventClass = function(index){
+console.log("inde getEventClass")
+   if (index % 2 == 0){
+     console.log("is even"); 
+     return "timeline";
+   }
+   return "timeline-inverted";
+
+}
 
 //Creation du  graphique des nouveaux utilisateurs par jour
 userService.newUsersByDay().then(function(res){

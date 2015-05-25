@@ -255,8 +255,8 @@
             <div class="container">
     <div class="box" >
     <ul class="timeline"><!--<li class="timeline-inverted"> -->
-        <li ng-repeat="event in events">
-            <div class="timeline-badge"><i class="glyphicon glyphicon-{{event.type}}"></i>
+        <li ng-repeat="event in events" class="getEventClass($index)">
+            <div class="timeline-badge {{event.class}}"><i class="glyphicon glyphicon-{{event.type}}"></i>
             </div>
             <div class="timeline-panel">
                 <div class="timeline-heading">

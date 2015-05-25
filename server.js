@@ -3,7 +3,7 @@ var request = require('request');
 var app = express();
 var mongoose = require('mongoose');
 var config = require('./config/config');
-mongoose.connect(config.mongo.url_dev);
+mongoose.connect(config.mongo.url_prod);
 app.use(express.static('./'));
 var path = require('path');
 var Twit = require('twit');
@@ -64,6 +64,7 @@ var mailOptions = {
 var eventSchema = mongoose.Schema({
 
     type        : String,
+    class      : String, 
     title     : String,
     date         : Date,
     details     : String
@@ -107,10 +108,11 @@ app.post('/notify/:tosend/:to',function(req,res){
 
             var e = new eventModel();
             e.type = "send";
-            e.title = "Envoi de mail : 1 Facesubscriber"
+            e.class = "info"; 
+            e.title = "Mail news"
             e.date = new Date();
-            e.details = content;
-            eventModel.save(function(err,savedEvent){
+            e.details = "To "+to+" : "+jsonBody.content;
+            e.save(function(err,savedEvent){
                 res.writeHead(200, {"Content-Type": "application/json"});
                 res.end(JSON.stringify(info)); 
             })    

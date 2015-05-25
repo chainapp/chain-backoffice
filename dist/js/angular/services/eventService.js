@@ -4,8 +4,8 @@ this.fetch = function() {
   var deferred = $q.defer();
   $http({
     method: 'GET',
-    url: 'http://localhost:8081/events',
-    //url: 'http://52.17.127.121:8081/events',
+    //url: 'http://localhost:8081/events',
+    url: 'http://52.17.127.121:8081/events',
     headers: {'Content-type':'application/json'}
   }).
   success(function (data, status, headers, config) {
