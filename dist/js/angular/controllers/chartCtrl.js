@@ -1,4 +1,4 @@
-appControllers.controller('chartCtrl', ['$scope','$http','userService','facebookService','twitterService','instagramService','eventService',function ChartCtrl($scope,$http,userService,facebookService,twitterService,instagramService,eventService) {
+appControllers.controller('chartCtrl', ['$scope','$http','userService','subscriberService','facebookService','twitterService','instagramService','eventService',function ChartCtrl($scope,$http,userService,subscriberService,facebookService,twitterService,instagramService,eventService) {
 
 $scope.title="Nouveaux utilisateurs";
 var salesChartCanvas = document.getElementById("salesChart").getContext("2d");
@@ -52,8 +52,7 @@ userService.newUsersByDay().then(function(res){
     }
 
     res.sort(compare);
-    $scope.minDate = res[0]._id.substring(0,10);
-    $scope.maxDate = res[res.length-1]._id.substring(0,10);
+    
 
     for (var i = 0 ; i < res.length; i++){
         labels.push(res[i]._id.substring(0,10));
@@ -61,6 +60,7 @@ userService.newUsersByDay().then(function(res){
         sum += parseInt(res[i].count);
     }
     $scope.usersCount = sum;
+    $scope.facefighters = sum;
 
     console.log(labels);
     console.log(dataSetUsers);
@@ -119,8 +119,47 @@ userService.newUsersByDay().then(function(res){
         responsive: true
     };
 
+    subscriberService.newSubscribersByDay.then(function(sub){
+        var labelsSub = [];
+        var dataSetSubscribers = [];
+        var  sumSub = 0;
+
+        for (var i = 0 ; i < sub.length; i++){
+            labelsSub.push(sub[i]._id.substring(0,10));
+            dataSetSubscribers.push(sub[i].count);
+            sumSub += parseInt(sub[i].count);
+        }
+
+        $scope.facesubscribers = sumSub;
+
+
+        var definitiveLabels = labels.sort().concat(labelsSub.sort());
+
+        $scope.minDate = definitiveLabels[0].substring(0,10);
+        $scope.maxDate = definitiveLabels[definitiveLabels.length-1].substring(0,10);
+
+        salesChartData.labels = definitiveLabels.sort();
+        salesChartData.datasets.push(
+            {
+                label: "Facesubscribers",
+                fillColor: "#00d584",
+                strokeColor: "#00d584",
+                pointColor: "#00d584",
+                pointStrokeColor: "#c1c7d1",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgb(220,220,220)",
+                data: dataSetSubscribers
+            }
+            );
+        salesChart.Line(salesChartData, salesChartOptions);
+    })
+
     //Create the line chart
-    salesChart.Line(salesChartData, salesChartOptions);
+    
+
+        
+
+
 
 	})
 	
