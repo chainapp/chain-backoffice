@@ -12,6 +12,11 @@ twitterService.followersCount().then(function(res){
 })
 
 
+facebookService.likesCount().then(function(res){
+
+    $scope.fbLikes = res.likes;
+})
+
 
 
 
