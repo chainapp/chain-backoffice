@@ -65,21 +65,7 @@ userService.newUsersByDay().then(function(res){
     console.log(labels);
     console.log(dataSetUsers);
 
-	var salesChartData = {
-		labels: labels.sort(),
-		datasets: [
-			{
-				label: "Users",
-				fillColor: "#3a3a3a",
-				strokeColor: "#3a3a3a",
-				pointColor: "#3a3a3a",
-				pointStrokeColor: "#c1c7d1",
-				pointHighlightFill: "#fff",
-				pointHighlightStroke: "rgb(220,220,220)",
-				data: dataSetUsers
-			}
-		]
-	};
+	
     var salesChartOptions = {
         //Boolean - If we should show the scale at all
         showScale: true,
@@ -119,7 +105,7 @@ userService.newUsersByDay().then(function(res){
         responsive: true
     };
 
-    subscriberService.newSubscribersByDay.then(function(sub){
+    subscriberService.newSubscribersByDay().then(function(sub){
         var labelsSub = [];
         var dataSetSubscribers = [];
         var  sumSub = 0;
@@ -135,22 +121,58 @@ userService.newUsersByDay().then(function(res){
 
         var definitiveLabels = labels.sort().concat(labelsSub.sort());
 
+        for (var i = 0 ; i < definitiveLabels.length ; i++){
+            for (var j = 0 ; j < res.length;j++){
+                if (res[j]._id = definitiveLabels[i]){
+                    dataUsers.push(res[j].count);
+                    break;
+                }
+                if (j=res.length-1){
+                    dataUsers.push(0);
+                }
+            }
+            for (var j = 0 ; j < sub.length;j++){
+                if (sub[j]._id = definitiveLabels[i]){
+                    dataSubscribers.push(sub[j].count);
+                    break;
+                }
+                if (j=sub.length-1){
+                    dataSubscribers.push(0);
+                }
+            }
+        }
+
         $scope.minDate = definitiveLabels[0].substring(0,10);
         $scope.maxDate = definitiveLabels[definitiveLabels.length-1].substring(0,10);
 
-        salesChartData.labels = definitiveLabels.sort();
-        salesChartData.datasets.push(
-            {
-                label: "Facesubscribers",
-                fillColor: "#00d584",
-                strokeColor: "#00d584",
-                pointColor: "#00d584",
-                pointStrokeColor: "#c1c7d1",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgb(220,220,220)",
-                data: dataSetSubscribers
-            }
-            );
+
+                var salesChartData = {
+                labels: definitiveLabels.sort(),
+                datasets: [
+                    {
+                        label: "Users",
+                        fillColor: "#3a3a3a",
+                        strokeColor: "#3a3a3a",
+                        pointColor: "#3a3a3a",
+                        pointStrokeColor: "#c1c7d1",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgb(220,220,220)",
+                        data: dataUsers
+                    },
+                    {
+                        label: "Facesubscribers",
+                        fillColor: "#00d584",
+                        strokeColor: "#00d584",
+                        pointColor: "#00d584",
+                        pointStrokeColor: "#c1c7d1",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgb(220,220,220)",
+                        data: dataSubscribers
+                    }
+                ]
+            };
+
+
         salesChart.Line(salesChartData, salesChartOptions);
     })
 

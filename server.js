@@ -176,7 +176,7 @@ var subscriberModel = mongoose.model('subscriber', subscriberSchema);
 
 app.get('/users/newUsersByDay',function(req,res){
 
-userModel.aggregate({$group:{_id:'$creationDate', count:{$sum:1}}}, function (err, data) {
+userModel.aggregate({$group:{_id:{ $dateToString: { format: "%Y-%m-%d", date: "$creationDate" } }, count:{$sum:1}}}, function (err, data) {
       if (err) { throw err; }
       
         res.writeHead(200, {"Content-Type": "application/json"});
@@ -213,7 +213,7 @@ app.get('/users',function(req,res){
 
 app.get('/subscribers/newSubscribersByDay',function(req,res){
 
-subscriberModel.aggregate({$group:{_id:'$registrationDate', count:{$sum:1}}}, function (err, data) {
+subscriberModel.aggregate({$group:{_id:{ $dateToString: { format: "%Y-%m-%d", date: "$registrationDate" } }, count:{$sum:1}}}, function (err, data) {
       if (err) { throw err; }
 
         res.writeHead(200, {"Content-Type": "application/json"});
