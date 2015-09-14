@@ -1,4 +1,4 @@
-appControllers.controller('chartCtrl', ['$scope','$http','userService','subscriberService','facebookService','twitterService','instagramService','eventService',function ChartCtrl($scope,$http,userService,subscriberService,facebookService,twitterService,instagramService,eventService) {
+appControllers.controller('chartCtrl', ['$scope','$http','userService','subscriberService','facebookService','twitterService','instagramService','eventService','chainService',function ChartCtrl($scope,$http,userService,subscriberService,facebookService,twitterService,instagramService,eventService,chainService) {
 
 $scope.title="Nouveaux utilisateurs";
 var salesChartCanvas = document.getElementById("salesChart").getContext("2d");
@@ -23,6 +23,10 @@ eventService.fetch().then(function(res){
 
     $scope.events = res;
 })
+
+// chainService.fetch().then(function(res){
+//     $scope.chains = res.length;
+// })
 
 $scope.getEventClass = function(index){
 console.log("inde getEventClass")
@@ -105,69 +109,101 @@ userService.newUsersByDay().then(function(res){
         responsive: true
     };
 
-    subscriberService.newSubscribersByDay().then(function(sub){
-        var labelsSub = [];
-        var dataSetSubscribers = [];
-        var  sumSub = 0;
+    chainService.newChainsByDay().then(function(chains){
+        var labelsChain = [];
+        var dataSetChains = [];
+        var  sumChains = 0;
 
-        for (var i = 0 ; i < sub.length; i++){
-            labelsSub.push(sub[i]._id.substring(0,10));
-            dataSetSubscribers.push(sub[i].count);
-            sumSub += parseInt(sub[i].count);
+        console.log(chains)
+
+        for (var i = 0 ; i < chains.length; i++){
+            labelsChain.push(chains[i]._id.substring(0,10));
+            dataSetChains.push(chains[i].count);
+            sumChains += parseInt(chains[i].count);
         }
 
-        $scope.facesubscribers = sumSub;
+        $scope.chains = sumChains;
+
+        var arrayUnique = function(a) {
+            return a.reduce(function(p, c) {
+                if (p.indexOf(c) < 0) p.push(c);
+                return p;
+            }, []);
+        };
+
+        var definitiveLabels = labels.sort().concat(labelsChain.sort()).sort();
+        var uniqueLabels = arrayUnique(definitiveLabels);
+        var longerLabels = [];
+        var dataUsers = [];
+        var dataChains = [];
 
 
-        var definitiveLabels = labels.sort().concat(labelsSub.sort());
-
-        for (var i = 0 ; i < definitiveLabels.length ; i++){
-            for (var j = 0 ; j < res.length;j++){
-                if (res[j]._id = definitiveLabels[i]){
-                    dataUsers.push(res[j].count);
-                    break;
-                }
-                if (j=res.length-1){
+            for (var i = 0 ; i < uniqueLabels.length ; i++){
+                if (labels.indexOf(uniqueLabels[i])!=-1){
+                    dataUsers.push(dataSetUsers[labels.indexOf(uniqueLabels[i])]);
+                }else{
                     dataUsers.push(0);
                 }
-            }
-            for (var j = 0 ; j < sub.length;j++){
-                if (sub[j]._id = definitiveLabels[i]){
-                    dataSubscribers.push(sub[j].count);
-                    break;
-                }
-                if (j=sub.length-1){
-                    dataSubscribers.push(0);
+                if (labelsChain.indexOf(uniqueLabels[i])!=-1){
+                    dataChains.push(dataSetChains[labelsChain.indexOf(uniqueLabels[i])]);
+                }else{
+                    dataChains.push(0);
                 }
             }
-        }
+
+            console.log(dataUsers);
+            console.log(dataChains);
+
+        // for (var i = 0 ; i < definitiveLabels.length ; i++){
+        //     for (var j = 0 ; j < res.length;j++){
+        //         if (res[j]._id = definitiveLabels[i]){
+        //             dataUsers.push(res[j].count);
+        //             break;
+        //         }
+        //         if (j=res.length-1){
+        //             dataUsers.push(0);
+        //         }
+        //     }
+        //     for (var j = 0 ; j < sub.length;j++){
+        //         if (sub[j]._id = definitiveLabels[i]){
+        //             dataSubscribers.push(sub[j].count);
+        //             break;
+        //         }
+        //         if (j=sub.length-1){
+        //             dataSubscribers.push(0);
+        //         }
+        //     }
+        // }
 
         $scope.minDate = definitiveLabels[0].substring(0,10);
         $scope.maxDate = definitiveLabels[definitiveLabels.length-1].substring(0,10);
 
+                console.log("data users is ");
+                console.log(dataSetUsers);
 
                 var salesChartData = {
-                labels: definitiveLabels.sort(),
+                labels: uniqueLabels.sort(),
                 datasets: [
+                    
+                    {
+                        label: "Chains",
+                        fillColor: "#00E1CD",
+                        strokeColor: "#00E1CD",
+                        pointColor: "#00E1CD",
+                        pointStrokeColor: "#c1c7d1",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgb(220,220,220)",
+                        data: dataChains
+                    },
                     {
                         label: "Users",
-                        fillColor: "#3a3a3a",
-                        strokeColor: "#3a3a3a",
-                        pointColor: "#3a3a3a",
+                        fillColor: "#4A4A4A",
+                        strokeColor: "#4A4A4A",
+                        pointColor: "#4A4A4A",
                         pointStrokeColor: "#c1c7d1",
                         pointHighlightFill: "#fff",
                         pointHighlightStroke: "rgb(220,220,220)",
                         data: dataUsers
-                    },
-                    {
-                        label: "Facesubscribers",
-                        fillColor: "#00d584",
-                        strokeColor: "#00d584",
-                        pointColor: "#00d584",
-                        pointStrokeColor: "#c1c7d1",
-                        pointHighlightFill: "#fff",
-                        pointHighlightStroke: "rgb(220,220,220)",
-                        data: dataSubscribers
                     }
                 ]
             };

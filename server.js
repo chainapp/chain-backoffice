@@ -9,8 +9,9 @@ var path = require('path');
 var Twit = require('twit');
 var Facebook = require('facebook-node-sdk');
 var ig = require('instagram-node').instagram();
-var ejs = require('ejs');
+var ejs = require('ejs');   
 var fs = require('fs');
+var ObjectId = mongoose.Schema.Types.ObjectId;
 
 ejs.open = '{{';
 ejs.close = '}}';   
@@ -30,7 +31,7 @@ ig.use({
 var facebook = new Facebook({ 
     appId: config.facebook.appId, 
     secret: config.facebook.secret 
-}).setAccessToken('940317362659855|407d1ca9220de0cabb69298424bb0868');;
+}).setAccessToken('7b56e8e62de7d686b47eabc55fa7eac6');;
 
 var T = new Twit({
     consumer_key:         config.twitter.consumer_key
@@ -129,35 +130,53 @@ app.post('/notify/:tosend/:to',function(req,res){
 
 
 var userSchema = mongoose.Schema({
-
+    username : { type: String, required: true, index : true },
+    profilePicture : String,
     local            : {
-        email        : String,
-        password     : String,
+        /*email        : String,
+        password     : String,*/
     },
-    creationDate     : Date,
     facebook         : {
     },
     twitter          : {
-        id           : String,
-        token        : String,
-        displayName  : String,
-        username     : String
     },
     google           : {
-        id           : String,
-        token        : String,
-        email        : String,
-        name         : String
     },
     notification     : {
         enable       : Boolean,
         token        : String
     },
-    ranking          : { 
-        type:'object', 
-        index : true
-    }
-
+    chains          : [
+        {
+            type: ObjectId, 
+            ref: 'Chains', 
+            required: true, 
+            index : true
+        }
+    ],
+    chains_count : Number,
+    followers          : {
+                type: ObjectId, 
+                ref: 'Followers', 
+                required: true, 
+                index : true
+    },
+    followers_count : Number,
+    follows : {
+                type: ObjectId, 
+                ref: 'Follows', 
+                required: true, 
+                index : true
+    },
+    follows_count : Number,
+    created_at     : Date,
+    updated_at     : Date,
+    last_connected_at : Date,
+    is_public      : Boolean,
+    access_token   : String,
+    refresh_token  : String,
+    views_count    : Number,
+    isLoggedIn : Boolean
 });
 
 var userModel = mongoose.model('user', userSchema);
@@ -172,13 +191,27 @@ var subscriberSchema = mongoose.Schema({
 
 var subscriberModel = mongoose.model('subscriber', subscriberSchema);
 
+app.get('/subscribe',function(req,res){
+    var name = req.query.name;
+    var mail = req.query.mail;
+    var date = new Date();
+    var sub = new subscriberModel();
+    sub.email=mail;
+    sub.name=name;
+    sub.date=date;
 
+    sub.save(function(err,saved){
+        if (err) throw err;
+        res.send('OK');
+    })
+})
 
 app.get('/users/newUsersByDay',function(req,res){
 
-userModel.aggregate({$group:{_id:{ $dateToString: { format: "%Y-%m-%d", date: "$creationDate" } }, count:{$sum:1}}}, function (err, data) {
+userModel.aggregate({$group:{_id:{ $dateToString: { format: "%Y-%m-%d", date: "$created_at" } }, count:{$sum:1}}}, function (err, data) {
       if (err) { throw err; }
-      
+        
+        console.log(data);
         res.writeHead(200, {"Content-Type": "application/json"});
         res.end(JSON.stringify(data));
       });
@@ -248,10 +281,114 @@ app.get('/subscribers',function(req,res){
 
 })
 
+
+var chainSchema = mongoose.Schema({
+    title : { type: String, index : true },
+    original_picture_s3 :  {
+        type: ObjectId, 
+        ref: 'Pictures', 
+        required: true, 
+        index : true
+    },
+    original_picture_s3_url: String,
+    current_picture_s3 : {
+        type: ObjectId, 
+        ref: 'Pictures', 
+        required: true, 
+        index : true
+    },
+    current_picture_s3_url: String,
+    author : {
+        type: ObjectId, 
+        ref: 'Users', 
+        required: true, 
+        index : true
+    },
+    chainers : [
+        {
+            user : {
+                type: ObjectId, 
+                ref: 'Users', 
+                required: true, 
+                index : true
+            },
+            picture : {
+                type: ObjectId, 
+                ref: 'Picture', 
+                required: true, 
+                index : true
+            }
+        }
+        
+    ],
+    created_at     : Date,
+    updated_at     : Date,
+    expire_at   : { type: String, index : true },
+    status  : String,
+    type : String,
+    comments : [
+        {
+            username : String,
+            user : {
+                type: ObjectId, 
+                ref: 'Users', 
+                required: true, 
+                index : true
+            },
+            date : Date,
+            content : String,
+            profilePicture : String
+        }
+    ],
+    likes : [
+        {
+            username : String,
+            user : {
+                type: ObjectId, 
+                ref: 'Users', 
+                required: true, 
+                index : true
+            },
+            date : Date
+        }
+    ],
+    views_count    : Number
+});
+
+var chainModel = mongoose.model('chain', chainSchema);
+
+
+app.get('/chains',function(req,res){
+
+    chainModel.find({}, function (err, data) {
+        if (err) { throw err; }
+
+        res.writeHead(200, {"Content-Type": "application/json"});
+        res.end(JSON.stringify(data));
+    });
+
+
+})
+
+app.get('/chains/newChainsByDay',function(req,res){
+
+chainModel.aggregate({$group:{_id:{ $dateToString: { format: "%Y-%m-%d", date: "$created_at" } }, count:{$sum:1}}}, function (err, data) {
+      if (err) { throw err; }
+        
+        console.log(data);
+        res.writeHead(200, {"Content-Type": "application/json"});
+        res.end(JSON.stringify(data));
+      });
+
+
+})
+
 app.get('/twitter/followers/count',function(req,res){
 
-    T.get('users/show', { user_id: '2982644231' },  function (err, data, response) {
+    T.get('users/show', { user_id: '3395509019' },  function (err, data, response) {
         if (err) throw err;
+
+        console.log('twitter data');
      console.log(data);
      var obj = {count:data.followers_count};
       res.writeHead(200, {"Content-Type": "application/json"});
@@ -267,7 +404,7 @@ app.get('/facebook/likes/count',function(req,res){
         /*facebook.api('/oauth/access_token?client_id=940317362659855&client_secret=407d1ca9220de0cabb69298424bb0868&grant_type=client_credentials', function(err, oauth) {
             if (err) throw err;
             console.log(oauth);*/
-             facebook.api('/v2.3/1556073201276412', function(err, data) {
+             facebook.api('/v2.4/1556073201276412?fields=likes', function(err, data) {
                 if (err) console.log(err);
                 console.log(data); // => { id: ... }
                 res.writeHead(200, {"Content-Type": "application/json"});
@@ -285,8 +422,8 @@ app.get('/instagram/followers/count',function(req,res){
     var accessTokenUrl = 'https://api.instagram.com/oauth/authorize';
  
   var params = {
-    client_id: '1540e90cb61e49e68126fba704960dc9',
-    client_secret: '4be769b2460c4cc2bdc791ff03222e4f',
+    client_id: 'c19252edc1e9436cba927839cbb7e4ae',
+    client_secret: 'd10e115de1d045fb9575d918e106e3fb',
     response_type: 'token',
     grant_type: 'token'
   };

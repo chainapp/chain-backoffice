@@ -5,7 +5,7 @@ this.fetch = function() {
   $http({
     method: 'GET',
     //url: 'http://localhost:8081/events',
-    url: 'http://52.17.127.121:8081/events',
+    url: 'http://chain-backoffice-qlf.elasticbeanstalk.com/events',
     headers: {'Content-type':'application/json'}
   }).
   success(function (data, status, headers, config) {

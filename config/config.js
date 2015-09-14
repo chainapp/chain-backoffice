@@ -3,27 +3,27 @@
 module.exports = {
 	mailer: {
 		auth: {
-			user: 'doyoufacefight@gmail.com',
-			pass: 'fac3fight'
+			user: 'chainappcontact@gmail.com',
+			pass: 'cha1napp'
 		},
-		defaultFromAddress: 'Facefight ✔ <doyoufacefight@gmail.com>'
+		defaultFromAddress: 'Chain ✔ <chainappcontact@gmail.com>'
 	},
 	twitter: {
-	   consumer_key:         'KUV58xsSCCzfiV7UZLJXXehCa',
-	   consumer_secret:      'sQIbBuI835JkLzWTe4LS60Xho5rd7EiPfK4gN5thAZlxn5DtT8',
-	   access_token:         '2982644231-5DfibM9TzYX9cKby0xRxOVFYX6t00bKtFz6RScB',
-	   access_token_secret:  'AAHZzex4QnOBSM9StDt7HN3D13uUJYPYTfKz5OOhkWEI5'
+	   consumer_key:         'k9iTvm4ESTlZG87yZwaHhIcZm',
+	   consumer_secret:      '3mCBx32It6HFhwQQfHQ3cykMDQgHHpxVAOCC7W912jAAaVzhLE',
+	   access_token:         '3395509019-f9xa9Vh3sc4pUYgHXFimaG5WGOR6Fo8OuzGu5Cu',
+	   access_token_secret:  'DclvenMnRtKNHJY2w1kGISjPj1VVagsgbMdZlSxoufaY9'
 	},
 	instagram: {
-		client_id: '1540e90cb61e49e68126fba704960dc9',
-        client_secret: '4be769b2460c4cc2bdc791ff03222e4f'
+		client_id: 'c19252edc1e9436cba927839cbb7e4ae',
+        client_secret: 'd10e115de1d045fb9575d918e106e3fb'
 	},
 	facebook: {
-		appId: '940317362659855',
-		secret: '407d1ca9220de0cabb69298424bb0868'
+		appId: '1439505569702173',
+		secret: 'd9f3b8aa33bb19c40645c8e10bbdc8c8'
 	},
 	mongo: {
-		url_prod: 'mongodb://52.17.127.121:27017/facefight',
-		url_dev: 'mongodb://localhost:27017/facefight'
+		url_prod: 'mongodb://52.17.127.121:27017/chain',
+		url_dev: 'mongodb://localhost:27017/chain'
 	}
 }

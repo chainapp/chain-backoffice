@@ -1,6 +1,12 @@
 {
-  "name": "AdminLTE",
-  "version": "2.0.3",
+  "name": "chain-backoffice",
+  "main": "server.js",
+  "version": "0.0.1",
+  "private": true,
+  "author":"Louis Stockreisser",
+  "scripts": {
+    "start": "node server.js"
+  },
   "devDependencies": {
     "grunt": "~0.4.5",
     "grunt-contrib-less": "^0.12.0",
