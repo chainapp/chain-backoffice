@@ -20,6 +20,12 @@ app.use(express.bodyParser());
 
 app.set('views', path.join(__dirname, 'templates'));
 app.set('view engine', 'ejs');
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
  
 // Every call to `ig.use()` overrides the `client_id/client_secret` 
 // or `access_token` previously entered if they exist. 
@@ -82,10 +88,10 @@ app.post('/notify/:tosend/:to',function(req,res){
     var jsonBody = req.body;
     console.log(jsonBody);
     var tosend = req.params.tosend
-    var template = process.cwd() + '/src/templates/' +tosend+'.ejs';
+    var template = process.cwd() + '/templates/' +tosend+'.ejs';
     var content = this.content;
     var to = req.params.to;
-    var subject = 'Hello '+req.body.user+', news from Facefight ✔';
+    var subject = 'Hello '+req.body.user+', news from Chain';
 
     // Use fileSystem module to read template file
 
