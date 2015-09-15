@@ -61,7 +61,7 @@ this.newChainsByDay = function() {
         var deferred = $q.defer();
         $http({
             method: 'GET',
-            url: 'http://chain-backoffice-qlf.elasticbeanstalk.com/chains/chainersByChain',
+            url: 'http://chain-backoffice-qlf.elasticbeanstalk.com/chains/chainsByChainer',
             //url: 'http://localhost:8081/chains/chainsByChainer',
             headers: {'Content-type':'application/json'}
         }).
