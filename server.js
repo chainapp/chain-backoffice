@@ -88,10 +88,10 @@ app.post('/notify/:tosend/:to',function(req,res){
     var jsonBody = req.body;
     console.log(jsonBody);
     var tosend = req.params.tosend
-    var template = process.cwd() + '/src/templates/' +tosend+'.ejs';
+    var template = process.cwd() + '/templates/' +tosend+'.ejs';
     var content = this.content;
     var to = req.params.to;
-    var subject = 'Hello '+req.body.user+', news from Facefight ✔';
+    var subject = 'Hello '+req.body.user+', news from Chain';
 
     // Use fileSystem module to read template file
 
