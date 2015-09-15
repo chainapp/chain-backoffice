@@ -383,6 +383,57 @@ chainModel.aggregate({$group:{_id:{ $dateToString: { format: "%Y-%m-%d", date: "
 
 })
 
+app.get('/chains/chainersByChain',function(req,res){
+
+chainModel.aggregate({
+    $unwind: "$chainers"
+},
+{
+    $group: {
+        _id: "$_id",
+        size: {
+            $sum: 1
+        }
+    }
+},
+{
+    $group: {
+        _id: "$size",
+        frequency: {
+            $sum: 1
+        }
+    }
+},
+{
+    $project: {
+        chainers: "$_id",
+        frequency: 1,
+        _id: 0
+    }
+}, function (err, data) {
+      if (err) { throw err; }
+        
+        console.log(data);
+        res.writeHead(200, {"Content-Type": "application/json"});
+        res.end(JSON.stringify(data));
+      });
+
+
+})
+
+app.get('/chains/chainsByChainer',function(req,res){
+
+chainModel.aggregate({$group:{_id: "$author" , count:{$sum:1}}}, function (err, data) {
+      if (err) { throw err; }
+        
+        console.log(data);
+        res.writeHead(200, {"Content-Type": "application/json"});
+        res.end(JSON.stringify(data));
+      });
+
+
+})
+
 app.get('/twitter/followers/count',function(req,res){
 
     T.get('users/show', { user_id: '3395509019' },  function (err, data, response) {

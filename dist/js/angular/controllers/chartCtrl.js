@@ -1,6 +1,6 @@
 appControllers.controller('chartCtrl', ['$scope','$http','userService','subscriberService','facebookService','twitterService','instagramService','eventService','chainService',function ChartCtrl($scope,$http,userService,subscriberService,facebookService,twitterService,instagramService,eventService,chainService) {
 
-$scope.title="Nouveaux utilisateurs";
+$scope.title="Insights";
 var salesChartCanvas = document.getElementById("salesChart").getContext("2d");
 var salesChart = new Chart(salesChartCanvas);
 $scope.events = [];
@@ -210,6 +210,26 @@ userService.newUsersByDay().then(function(res){
 
 
         salesChart.Line(salesChartData, salesChartOptions);
+
+        chainService.chainersByChain().then(function(res){
+            console.log(res);
+            //$scope.chainersByChain = res;
+            var sum = 0;
+            for (var i = 0 ; i < res.length ; i++){
+                sum+=(res[i].frequency * (res[i].chainers+1));
+            }
+            $scope.chainersByChain = (parseFloat((sum / $scope.chains))).toFixed(2);
+        });
+
+        chainService.chainsByChainer().then(function(res){
+            console.log(res);
+            //$scope.chainersByChain = res;
+            var sum = 0;
+            for (var i = 0 ; i < res.length ; i++){
+                sum+=(res[i].count);
+            }
+            $scope.chainsByChainer = (parseFloat((sum / $scope.usersCount))).toFixed(2);
+        });
     })
 
     //Create the line chart

@@ -38,6 +38,44 @@ this.newChainsByDay = function() {
 
     }
 
+    this.chainersByChain = function() {
+        var deferred = $q.defer();
+        $http({
+            method: 'GET',
+            url: 'http://chain-backoffice-qlf.elasticbeanstalk.com/chains/chainersByChain',
+            //url: 'http://localhost:8081/chains/chainersByChain',
+            headers: {'Content-type':'application/json'}
+        }).
+            success(function (data, status, headers, config) {
+                deferred.resolve(data);
+            }).
+            error(function (data, status) {
+                deferred.reject(data);
+            });
+
+        return deferred.promise;
+
+    }
+
+    this.chainsByChainer = function() {
+        var deferred = $q.defer();
+        $http({
+            method: 'GET',
+            url: 'http://chain-backoffice-qlf.elasticbeanstalk.com/chains/chainersByChain',
+            //url: 'http://localhost:8081/chains/chainsByChainer',
+            headers: {'Content-type':'application/json'}
+        }).
+            success(function (data, status, headers, config) {
+                deferred.resolve(data);
+            }).
+            error(function (data, status) {
+                deferred.reject(data);
+            });
+
+        return deferred.promise;
+
+    }
+
 
 this.count = function() {
   var deferred = $q.defer();
