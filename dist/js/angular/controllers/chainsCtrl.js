@@ -1,10 +1,12 @@
-appControllers.controller('chainsCtrl', ['$scope','$http','chainService','ngTableParams','$filter',function ChainsCtrl($scope,$http,chainService,ngTableParams,$filter) {
+appControllers.controller('chainsCtrl', ['$scope','$http','chainService','ngTableParams','$filter','$timeout',function ChainsCtrl($scope,$http,chainService,ngTableParams,$filter,$timeout) {
 
 
 
-
+$scope.alerts = [];
 
 //Creation du  tableau des chains
+
+$scope.init = function(){
     chainService.fetch().then(function(res) {
     	$scope.type = "(Tout)";
 
@@ -28,13 +30,29 @@ appControllers.controller('chainsCtrl', ['$scope','$http','chainService','ngTabl
 	        }
 	    });
     })
+}
+$scope.init();
+
+    $scope.delete = function(chain){
+        console.log("deleting chain "+chain.title);
+        
+        chainService.delete(chain._id).then(function(res){
+            $scope.alerts.push({title:'#'+chain.title});
+            $timeout(function(){ $scope.alerts.splice(0,1);console.log("timeout"); }, 3000);
+            init();
+        })
+    }
 
     $scope.filterTypes = function(chain){
-    	if ($scope.type = "(Tout)"){
+    	if ($scope.type == "(Tout)"){
     		return chain;
     	}else{
     		return (chain.type == $scope.type);
     	}
     }
+
+    $scope.closeAlert = function(index) {
+        $scope.alerts.splice(index, 1);
+      };
 
 }]);

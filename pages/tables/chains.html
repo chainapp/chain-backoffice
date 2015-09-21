@@ -104,7 +104,11 @@
 
         <!-- Main content -->
         <section class="content" ng-controller="chainsCtrl">
-          <div class="row">
+        <div ng-repeat="alert in alerts" class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            Chain <strong>{{alert.title}}</strong> has been successfully deleted !
+          </div>
+        <div class="row">
             <div class="col-xs-12">
               <div class="box">
                 <div class="box-header">
@@ -162,7 +166,7 @@
                           <td>
                             <!-- <button type="button" class="btn btn-info glyphicon glyphicon-picture" title="{{user.chains_count}} Chains"></button> -->
                             <!-- <button type="button" class="btn btn-success glyphicon glyphicon-send" title="Contacter"></button> -->
-                            <button type="button" class="btn btn-danger glyphicon glyphicon-remove" title="Supprimer"></button>
+                            <button type="button" class="btn btn-danger glyphicon glyphicon-remove" title="Supprimer" ng-click="delete(chain)"></button>
                           </td>
                       </tr>
                     </tbody>

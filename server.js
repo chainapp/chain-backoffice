@@ -12,6 +12,8 @@ var ig = require('instagram-node').instagram();
 var ejs = require('ejs');   
 var fs = require('fs');
 var ObjectId = mongoose.Schema.Types.ObjectId;
+var moment = require('moment');
+var async = require('async');
 
 ejs.open = '{{';
 ejs.close = '}}';   
@@ -195,6 +197,8 @@ var subscriberSchema = mongoose.Schema({
 
 });
 
+mongoose.set('debug',true);
+
 var subscriberModel = mongoose.model('subscriber', subscriberSchema);
 
 app.get('/subscribe',function(req,res){
@@ -221,6 +225,39 @@ userModel.aggregate({$group:{_id:{ $dateToString: { format: "%Y-%m-%d", date: "$
         res.writeHead(200, {"Content-Type": "application/json"});
         res.end(JSON.stringify(data));
       });
+
+
+})
+
+
+
+app.get('/users/runningUsers',function(req,res){
+
+    var a = moment('2015-09-01');
+    var b = moment(new Date());
+    var result = [];
+    var moments = [];
+
+    for (var m = a; m.isBefore(b); m.add('days', 1)) {
+      moments.push(m.format('YYYY-MM-DD'));
+    }
+
+    async.eachSeries(moments,function(day,callback){
+        userModel.find({"created_at": {"$lte": new Date(day)}},function (err, data) {
+        if (err) { throw err; }
+        result.push({
+            date:day,
+            users:data.length
+        })
+        callback();
+      });
+    },function(err){
+        //res.writeHead(200, {"Content-Type": "application/json"});
+        res.status(200).send(result);
+    })
+    
+
+
 
 
 })
@@ -388,6 +425,10 @@ chainModel.aggregate({$group:{_id:{ $dateToString: { format: "%Y-%m-%d", date: "
 
 
 })
+
+
+
+
 
 app.get('/chains/chainersByChain',function(req,res){
 

@@ -95,4 +95,23 @@ this.count = function() {
   return deferred.promise;
 
 }
+
+this.delete = function(chainId) {
+        var deferred = $q.defer();
+        $http({
+            method: 'DELETE',
+            url: 'http://chain-backoffice-qlf.elasticbeanstalk.com/chains/'+chainId,
+            //url: 'http://localhost:8081/chains/chainersByChain',
+            headers: {'Content-type':'application/json'}
+        }).
+            success(function (data, status, headers, config) {
+                deferred.resolve(data);
+            }).
+            error(function (data, status) {
+                deferred.reject(data);
+            });
+
+        return deferred.promise;
+
+    }
 });

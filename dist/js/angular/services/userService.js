@@ -38,6 +38,25 @@ this.newUsersByDay = function() {
 
     }
 
+    this.runningUsers = function() {
+        var deferred = $q.defer();
+        $http({
+            method: 'GET',
+            url: 'http://chain-backoffice-qlf.elasticbeanstalk.com/users/runningUsers',
+            //url: 'http://localhost:8081/users/runningUsers',
+            headers: {'Content-type':'application/json'}
+        }).
+            success(function (data, status, headers, config) {
+                deferred.resolve(data);
+            }).
+            error(function (data, status) {
+                deferred.reject(data);
+            });
+
+        return deferred.promise;
+
+    }
+
 
 this.count = function() {
   var deferred = $q.defer();
