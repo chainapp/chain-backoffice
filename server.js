@@ -241,7 +241,7 @@ app.get('/users/runningUsers',function(req,res){
     for (var m = a; m.isBefore(b); m.add('days', 1)) {
       moments.push(m.format('YYYY-MM-DD'));
     }
-    moments.push(m.add('days',1).format('YYYY-MM-DD'));
+    moments.push(m.format('YYYY-MM-DD'));
 
     async.eachSeries(moments,function(day,callback){
         userModel.find({"created_at": {"$lte": new Date(day)}},function (err, data) {
