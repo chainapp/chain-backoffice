@@ -3,7 +3,7 @@ var request = require('request');
 var app = express();
 var mongoose = require('mongoose');
 var config = require('./config/config');
-mongoose.connect(config.mongo.url_prod);
+mongoose.connect(process.env.DB_URL || config.mongo.url_prod);
 app.use(express.static('./'));
 var path = require('path');
 var Twit = require('twit');
@@ -241,10 +241,9 @@ app.get('/users/runningUsers',function(req,res){
     for (var m = a; m.isBefore(b); m.add('days', 1)) {
       moments.push(m.format('YYYY-MM-DD'));
     }
-    moments.push(m.format('YYYY-MM-DD'));
 
     async.eachSeries(moments,function(day,callback){
-        userModel.find({"created_at": {"$lte": new Date(day)}},function (err, data) {
+        userModel.find({"created_at": {"$lte": new Date(day.add('days',1))}},function (err, data) {
         if (err) { throw err; }
         result.push({
             date:day,
