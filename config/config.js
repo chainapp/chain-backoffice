@@ -4,7 +4,7 @@ module.exports = {
 	mailer: {
 		auth: {
 			user: 'chainappcontact@gmail.com',
-			pass: 'cha1napp'
+			pass: 'Cha1napp'
 		},
 		defaultFromAddress: 'Chain ✔ <chainappcontact@gmail.com>'
 	},
