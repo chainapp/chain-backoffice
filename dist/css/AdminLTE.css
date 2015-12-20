@@ -1625,6 +1625,20 @@ a:focus {
   line-height: 90px;
   background: rgba(0, 0, 0, 0.2);
 }
+.info-box-image {
+  border-top-left-radius: 2px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 2px;
+  display: block;
+  float: left;
+  height: 90px;
+  width: 90px;
+  text-align: center;
+  font-size: 45px;
+  line-height: 90px;
+  background: rgba(0, 0, 0, 0.2);
+}
 .info-box-content {
   padding: 5px 10px;
   margin-left: 90px;
@@ -3707,6 +3721,12 @@ fieldset[disabled] .btn-vk.active {
 }
 .bg-blue {
   background-color: #0073b7 !important;
+}
+.bg-chain-blue {
+  background-color: #4A4A4A !important;
+}
+.bg-chain-gray {
+  background-color: #00E1CD !important;
 }
 .bg-light-blue,
 .label-primary,

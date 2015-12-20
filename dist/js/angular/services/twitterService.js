@@ -5,7 +5,7 @@ this.followersCount = function() {
   $http({
     method: 'GET',
     //url: 'http://localhost:8081/twitter/followers/count',
-    url: 'http://chain-backoffice-qlf.elasticbeanstalk.com/twitter/followers/count',
+    url: 'http://chain-backoffice.elasticbeanstalk.com/twitter/followers/count',
     headers: {'Content-type':'application/json'}
   }).
   success(function (data, status, headers, config) {

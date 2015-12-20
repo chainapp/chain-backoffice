@@ -1135,6 +1135,8 @@ img {
 }
 .img-circle {
   border-radius: 50%;
+  width:60px;
+  height:60px;
 }
 hr {
   margin-top: 20px;

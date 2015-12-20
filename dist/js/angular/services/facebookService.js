@@ -4,7 +4,7 @@ this.likesCount = function() {
   var deferred = $q.defer();
   $http({
     method: 'GET',
-    url: 'https://chain-backoffice-qlf.elasticbeanstalk.com/facebook/likes/count',
+    url: 'https://chain-backoffice.elasticbeanstalk.com/facebook/likes/count',
     //url: 'http://localhost:8081/facebook/likes/count',
     headers: {'Content-type':'application/json'}
   }).

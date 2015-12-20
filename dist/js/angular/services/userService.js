@@ -4,7 +4,7 @@ this.newUsersByDay = function() {
   var deferred = $q.defer();
   $http({
     method: 'GET',
-    url: 'http://chain-backoffice-qlf.elasticbeanstalk.com/users/newUsersByDay',
+    url: 'http://chain-backoffice.elasticbeanstalk.com/users/newUsersByDay',
     //url: 'http://localhost:8081/users/newUsersByDay',
     headers: {'Content-type':'application/json'}
   }).
@@ -23,7 +23,7 @@ this.newUsersByDay = function() {
         var deferred = $q.defer();
         $http({
             method: 'GET',
-            url: 'http://chain-backoffice-qlf.elasticbeanstalk.com/users',
+            url: 'http://chain-backoffice.elasticbeanstalk.com/users',
             //url: 'http://localhost:8081/users',
             headers: {'Content-type':'application/json'}
         }).
@@ -42,7 +42,7 @@ this.newUsersByDay = function() {
         var deferred = $q.defer();
         $http({
             method: 'GET',
-            url: 'http://chain-backoffice-qlf.elasticbeanstalk.com/users/runningUsers',
+            url: 'http://chain-backoffice.elasticbeanstalk.com/users/runningUsers',
             //url: 'http://localhost:8081/users/runningUsers',
             headers: {'Content-type':'application/json'}
         }).
@@ -62,7 +62,7 @@ this.count = function() {
   var deferred = $q.defer();
   $http({
     method: 'GET',
-    url: 'http://chain-backoffice-qlf.elasticbeanstalk.com/users/count',
+    url: 'http://chain-backoffice.elasticbeanstalk.com/users/count',
     //url: 'http://localhost:8081/users/count',
     headers: {'Content-type':'application/json'}
   }).

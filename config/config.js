@@ -6,7 +6,7 @@ module.exports = {
 			user: 'chainappcontact@gmail.com',
 			pass: 'Cha1napp'
 		},
-		defaultFromAddress: 'Chain ✔ <chainappcontact@gmail.com>'
+		defaultFromAddress: 'Chain <chainappcontact@gmail.com>'
 	},
 	twitter: {
 	   consumer_key:         'k9iTvm4ESTlZG87yZwaHhIcZm',
@@ -23,7 +23,7 @@ module.exports = {
 		secret: 'd9f3b8aa33bb19c40645c8e10bbdc8c8'
 	},
 	mongo: {
-		url_prod: 'mongodb://54.154.16.245:27017/chain',
+		url_prod: 'mongodb://52.30.191.210:27017/chain',
 		url_dev: 'mongodb://localhost:27017/chain'
 	}
 }

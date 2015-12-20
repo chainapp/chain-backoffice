@@ -1,8 +1,9 @@
-appControllers.controller('chainsCtrl', ['$scope','$http','chainService','ngTableParams','$filter','$timeout',function ChainsCtrl($scope,$http,chainService,ngTableParams,$filter,$timeout) {
+appControllers.controller('chainsCtrl', ['$scope','$http','chainService','ngTableParams','$filter','$timeout','$uibModal',function ChainsCtrl($scope,$http,chainService,ngTableParams,$filter,$timeout,$uibModal) {
 
 
 
 $scope.alerts = [];
+$scope.display = false;
 
 //Creation du  tableau des chains
 
@@ -35,9 +36,21 @@ $scope.init();
 
     $scope.delete = function(chain){
         console.log("deleting chain "+chain.title);
-        
-        chainService.delete(chain._id).then(function(res){
-            $scope.alerts.push({title:'#'+chain.title});
+        if (confirm("Etes-vous sûr de vouloir supprimer la chain "+chain.title+" ?")){
+            chainService.delete(chain._id).then(function(res){
+                $scope.alerts.push({title:'Chain #'+chain.title+" has been successfully deleted !"});
+                $timeout(function(){ $scope.alerts.splice(0,1);console.log("timeout"); }, 3000);
+                $scope.init();
+            })
+        }
+    }
+
+    $scope.changeType = function(chain){
+        console.log("changing type of chain "+chain.title);
+        var oldType = chain.type;
+        chainService.changeType(chain._id).then(function(res){
+            var newType = res.type;
+            $scope.alerts.push({title:'Chain #'+chain.title+" has been successfully moved from "+oldType+" to "+newType+" !"});
             $timeout(function(){ $scope.alerts.splice(0,1);console.log("timeout"); }, 3000);
             $scope.init();
         })
@@ -54,5 +67,85 @@ $scope.init();
     $scope.closeAlert = function(index) {
         $scope.alerts.splice(index, 1);
       };
+
+  $scope.items = ['item1', 'item2', 'item3'];
+
+  $scope.animationsEnabled = true;
+
+  $scope.open = function (chain) {
+
+    var modalInstance = $uibModal.open({
+      animation: $scope.animationsEnabled,
+      templateUrl: 'myModalContent.html',
+      controller: 'ChainInstanceCtrl',
+      chain: chain,
+      resolve: {
+        chain: function () {
+          return chain;
+        }
+      }
+    });
+
+    modalInstance.result.then(function (selectedItem) {
+      $scope.selected = selectedItem;
+    }, function () {
+      console.log('Modal dismissed at: ' + new Date());
+    });
+  };
+
+  $scope.toggleAnimation = function () {
+    $scope.animationsEnabled = !$scope.animationsEnabled;
+  };
+
+}]);
+
+// Please note that $modalInstance represents a modal window (instance) dependency.
+// It is not the same as the $uibModal service used above.
+
+appControllers.controller('ChainInstanceCtrl', ['$scope','$uibModalInstance','chainService','chain',function ChainInstanceCtrl($scope, $uibModalInstance,chainService, chain) {
+
+  //$scope.items = items;
+  // $scope.selected = {
+  //   item: $scope.items[0]
+  // };
+
+  $scope.chain = chain;
+  $scope.pictures = [];
+  $scope.displayPic = false;
+  $scope.pictures.push(chain.author);
+  for (var i = 0 ; i < chain.chainers.length ; i++){
+    $scope.pictures.push(chain.chainers[i]);
+  }
+
+  $scope.ok = function () {
+    $uibModalInstance.close(chain);
+  };
+
+  $scope.cancel = function () {
+    $uibModalInstance.dismiss('cancel');
+  };
+
+  $scope.alerts = [];
+
+
+  $scope.init = function(){
+    chainService.getChain(chain._id).then(function(res){
+        $scope.chain = res;
+    })
+  }
+
+   $scope.deletePicture = function(picture){
+        console.log("deleting picture "+picture._id);
+        if (confirm("Etes-vous sûr de vouloir supprimer la photo de "+picture.username+" ?")){
+            chainService.deletePicture(picture._id).then(function(res){
+                // $scope.alerts.push({title:'Chain #'+chain.title+" has been successfully deleted !"});
+                // $timeout(function(){ $scope.alerts.splice(0,1);console.log("timeout"); }, 3000);
+                $scope.init();
+            })
+        }
+    }
+
+
+
 
 }]);

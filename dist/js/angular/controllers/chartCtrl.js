@@ -1,12 +1,13 @@
-appControllers.controller('chartCtrl', ['$scope','$http','userService','subscriberService','facebookService','twitterService','instagramService','eventService','chainService',function ChartCtrl($scope,$http,userService,subscriberService,facebookService,twitterService,instagramService,eventService,chainService) {
+appControllers.controller('chartCtrl', ['$scope','$http','userService','subscriberService','facebookService','twitterService','instagramService','eventService','chainService','NgMap',function ChartCtrl($scope,$http,userService,subscriberService,facebookService,twitterService,instagramService,eventService,chainService,NgMap) {
 
 $scope.title="Insights";
 var salesChartCanvas = document.getElementById("salesChart").getContext("2d");
 var salesChart = new Chart(salesChartCanvas);
 var usersGrowthChartCanvas = document.getElementById("usersGrowthChart").getContext("2d");
 var usersGrowthChart = new Chart(usersGrowthChartCanvas);
+var typeChartCanvas = document.getElementById("typeChart").getContext("2d");
+var typeChart = new Chart(typeChartCanvas);
 $scope.events = [];
-
 
 
 twitterService.followersCount().then(function(res){
@@ -31,14 +32,18 @@ userService.runningUsers().then(function(res){
     console.log(res);
     var usersGrowthData = [];
     var usersGrowthLabels = [];
+    var percentGrowth = 0;
     for (var i = 0 ; i < res.length ; i++){
+
         if (i>0){
+            percentGrowth+=parseFloat(((res[i].users-res[i-1].users)*100/res[res.length-1].users).toFixed(2));
             usersGrowthData.push(((res[i].users-res[i-1].users)*100/res[res.length-1].users).toFixed(2));
         }else{
             usersGrowthData.push(0);
         }
         usersGrowthLabels.push(res[i].date);
     }
+    $scope.percentGrowth = (percentGrowth / res.length).toFixed(2);
     var usersGrowthOptions = {
         //Boolean - If we should show the scale at all
         showScale: true,
@@ -99,9 +104,38 @@ userService.runningUsers().then(function(res){
         usersGrowthChart.Line(usersGrowth, usersGrowthOptions);
 })
 
-// chainService.fetch().then(function(res){
-//     $scope.chains = res.length;
-// })
+chainService.fetch().then(function(res){
+    NgMap.getMap().then(function(map) {
+        var markers = [];
+        var infowindows = [];
+        for (var i = 0; i < res.length; i++) {
+            if (res[i].location){
+                infowindows[i] = new google.maps.InfoWindow();
+                markers[i] = new google.maps.Marker({ title: "Chain #" + res[i].title });
+                var lat = res[i].location.latitude;
+                var lng = res[i].location.longitude;
+                var loc = new google.maps.LatLng(lat, lng);
+                var contentString = '<div id="content">'+
+                  '<div id="siteNotice">'+
+                  '</div>'+
+                  '<h1 id="firstHeading" class="firstHeading">#'+res[i].title+'</h1>'+
+                  '<div id="bodyContent">'+
+                  '<img src="'+res[i].current_picture_s3_url+'" width="100" height="100"></img>'+
+                  '</div>'+
+                  '</div>';
+                   infowindows[i].setContent(contentString);
+                google.maps.event.addListener(markers[i], 'click', function(innerKey) {
+                  return function() {
+                      infowindows[innerKey].open(map, markers[innerKey]);
+                  }
+                }(i));
+                
+                markers[i].setPosition(loc);
+                markers[i].setMap(map);
+            }
+        }
+      }, 1000);
+})
 
 $scope.getEventClass = function(index){
 console.log("inde getEventClass")
@@ -304,6 +338,69 @@ userService.newUsersByDay().then(function(res){
                 sum+=(res[i].count);
             }
             $scope.chainsByChainer = (parseFloat((sum / $scope.usersCount))).toFixed(2);
+        });
+
+        chainService.topChainers().then(function(res){
+            $scope.topChainers = res.slice(0,5);
+            //$scope.chainersByChain = res;
+            console.log($scope.topChainers);
+        });
+
+        chainService.chainsByType().then(function(res){
+            console.log(res);
+
+            var pieOptions = {
+                //Boolean - Whether we should show a stroke on each segment
+                segmentShowStroke : true,
+
+                //String - The colour of each segment stroke
+                segmentStrokeColor : "#fff",
+
+                //Number - The width of each segment stroke
+                segmentStrokeWidth : 2,
+
+                //Number - The percentage of the chart that we cut out of the middle
+                percentageInnerCutout : 50, // This is 0 for Pie charts
+
+                //Number - Amount of animation steps
+                animationSteps : 100,
+
+                //String - Animation easing effect
+                animationEasing : "easeOutBounce",
+
+                //Boolean - Whether we animate the rotation of the Doughnut
+                animateRotate : true,
+
+                //Boolean - Whether we animate scaling the Doughnut from the centre
+                animateScale : false,
+
+                //String - A legend template
+                legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
+
+            }
+
+            var data = [
+            {
+                value: res[1].count,
+                color:"#00E1CD",
+                highlight: "#00E1CD",
+                label: res[1]._id + " ("+parseFloat(res[1].count*100/(res[0].count+res[1].count)).toFixed(2)+"%)"
+            },
+            {
+                value: res[0].count,
+                color: "#4A4A4A",
+                highlight: "#4A4A4A",
+                label: res[0]._id + " ("+parseFloat(res[0].count*100/(res[0].count+res[1].count)).toFixed(2)+"%)"
+            }];
+            //
+             typeChart.Pie(data, pieOptions);
+
+            //$scope.chainersByChain = res;
+            // var sum = 0;
+            // for (var i = 0 ; i < res.length ; i++){
+            //     sum+=(res[i].count);
+            // }
+            // $scope.chainsByChainer = (parseFloat((sum / $scope.usersCount))).toFixed(2);
         });
     })
 
