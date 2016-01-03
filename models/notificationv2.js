@@ -8,7 +8,8 @@ var notificationSchema = mongoose.Schema({
     message : String,
     type : String,
     lang : String,
-    status : String
+    status : String,
+    threshold : Number,
 });
 
 // create the model for users and expose it to our app

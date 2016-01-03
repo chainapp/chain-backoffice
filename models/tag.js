@@ -8,7 +8,8 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 var tagSchema = mongoose.Schema({
     tag : { type: String, index : true },
     s3_picture_url : String,
-    created_at     : Date
+    created_at     : Date,
+    priority : Number
 });
 
 tagSchema.set('versionKey', false);

@@ -1,5 +1,5 @@
-var app = angular.module('facefight-backoffice', ['appControllers', 'appServices', 'appDirectives','ui.bootstrap','ngTable','ngMap']);
-var appControllers = angular.module('appControllers', ['ui.bootstrap']);
+var app = angular.module('facefight-backoffice', ['appControllers', 'appServices', 'appDirectives','ui.bootstrap','ngMap','angular-sortable-view','ngFileUpload','amChartsDirective','ngTable']);
+var appControllers = angular.module('appControllers', ['ui.bootstrap','angular-sortable-view']);
 var appServices = angular.module('appServices', []);
 var appDirectives = angular.module('appDirectives', []);
 // app.directive('confirmationNeeded', function () {

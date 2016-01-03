@@ -38,6 +38,25 @@ this.newUsersByDay = function() {
 
     }
 
+    this.activeUsers = function() {
+        var deferred = $q.defer();
+        $http({
+            method: 'GET',
+            url: 'http://chain-backoffice.elasticbeanstalk.com/stats/activeUsers',
+            //url: 'http://localhost:8081/stats/activeUsers',
+            headers: {'Content-type':'application/json'}
+        }).
+            success(function (data, status, headers, config) {
+                deferred.resolve(data);
+            }).
+            error(function (data, status) {
+                deferred.reject(data);
+            });
+
+        return deferred.promise;
+
+    }
+
     this.runningUsers = function() {
         var deferred = $q.defer();
         $http({

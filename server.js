@@ -26,10 +26,14 @@ var UserNotif = require('./models/userNotification');
 var Notification = require('./models/notification');
 var Notificationv2 = require('./models/notificationv2');
 var UserNotification = require('./models/userNotification');
+var Stats = require('./models/stats.js');
 var cookieParser = require('cookie-parser');
 var bodyParser   = require('body-parser');
 var async = require('async');
 var math = require('mathjs');
+var fs = require('fs');
+var multer  = require('multer');
+var AWS = require('aws-sdk');
 mongoose.connect(process.env.DB_URL || config.mongo.url_prod);
 require('./config/passport')(passport);
 app.use( express.cookieParser() );
@@ -193,6 +197,56 @@ app.post('/notify/:tosend/:to',function(req,res){
 })
 
 
+function compareDates(a,b) {
+  if (a.date < b.date)
+    return -1;
+  if (a.date > b.date)
+    return 1;
+  return 0;
+}
+
+app.get('/stats/activeUsers',function(req,res){
+    
+    var result = [];
+
+    Stats.aggregate(
+        { $group:{ _id:{ date : {$dateToString: { format: "%Y-%m-%d", date: "$date" }}, user_id  :'$user_id' } }},
+        { $group:{ _id:{ date:'$_id.date', type:"day"}, count:{$sum:1}}},
+        function (err, data) {
+      if (err) { throw err; }
+
+      for (var i = 0 ; i < data.length ; i++){
+        var metric = {};
+        metric.date = data[i]._id.date+" 12:00";
+        metric.daily = data[i].count;
+        result.push(metric  );
+      }
+
+      Stats.aggregate(
+        { $group:{ _id:{ date : {$dateToString: { format: "%Y-%m-%d %H:00", date: "$date" }}, user_id  :'$user_id' } }},
+        { $group:{ _id:{ date:'$_id.date', type:"hour"}, count:{$sum:1}}},
+        function (err, data) {
+          if (err) { throw err; }
+          for (var i = 0 ; i < data.length ; i++){
+            var found = false;
+            for (var j = 0 ; j < result.length; j++){
+                if (result[j].date == data[i]._id.date){
+                    result[j].hourly = data[i].count;
+                    found = true;
+                }
+            }
+            if (!found){
+                var metric = {};
+                metric.date = data[i]._id.date;
+                metric.hourly = data[i].count;
+                result.push(metric);
+            }
+           
+          }
+          res.send(result.sort(compareDates));  
+      }) 
+    })
+})
 
 
 var userSchema = mongoose.Schema({
@@ -754,6 +808,19 @@ chainModel.aggregate({$group:{_id:{ $dateToString: { format: "%Y-%m-%d", date: "
 
 })
 
+app.get('/chains/newChainsV2ByDay',function(req,res){
+
+Chainv2.aggregate({$group:{_id:{ $dateToString: { format: "%Y-%m-%d", date: "$created_at" } }, count:{$sum:1}}}, function (err, data) {
+      if (err) { throw err; }
+        
+        console.log(data);
+        res.writeHead(200, {"Content-Type": "application/json"});
+        res.end(JSON.stringify(data));
+      });
+
+
+})
+
 
 app.get('/chains/chainsByType',function(req,res){
 
@@ -980,6 +1047,102 @@ app.post('/notifications',function(req,res){
 })
 
 
+app.get('/v2/tags',function(req,res){
+
+    Tag.find({},function(err,tags){
+        if (err) throw err;
+        res.status(200).send(tags);
+    })
+
+})
+
+app.post('/v2/tags',function(req,res){
+
+    var tag = req.body.tag;
+    var url = req.body.url;
+    var priority = req.body.priority;
+
+    var newTag = new Tag();
+    newTag.tag = tag;
+    newTag.created_at = new Date();
+    newTag.s3_picture_url = url+'?timestamp='+(new Date()).getTime();
+
+    newTag.save(function(err){
+        if (err) throw err;
+        Tag.find({},function(err,tags){
+            if (err) throw err;
+            res.status(200).send(tags);
+        })
+    })
+})
+     
+app.put('/v2/tags/:tagId',function(req,res){
+
+    var tagId = req.params.tagId;
+    var tagLabel = req.body.tag;
+    var s3_picture_url = req.body.s3_picture_url;
+    var priority = req.body.priority;
+
+    Tag.findById(tagId,function(err,tag){
+        if (err) throw err;
+
+        tag.tag = tagLabel;
+        tag.priority = priority;
+        tag.created_at = new Date();
+        tag.s3_picture_url = s3_picture_url+"?timestamp="+(new Date()).getTime();
+
+        tag.save(function(err){
+            if (err) throw err;
+            Tag.find({},function(err,tags){
+                if (err) throw err;
+                res.status(200).send(tags);
+            })
+        })
+
+        
+    })
+
+})
+
+app.delete('/v2/tags/:tagId',function(req,res){
+
+    var tagId = req.params.tagId;
+
+    Tag.findById(tagId).remove().exec(function(err,tag){
+        if (err) throw err;
+        res.status(200).send('OK');
+    })
+
+})
+
+
+app.get('v2/notifications',function(req,res){
+
+    Notificationv2.find({},function(err,notifs){
+        if (err) throw err;
+        res.status(200).send(notifs);
+    })
+
+})
+
+app.post('v2/notifications',function(req,res){
+
+    var newNotif = new Notificationv2();
+    newNotif.message = req.body.message;
+    newNotif.type = req.body.type;
+    newNotif.lang = req.body.lang;
+    newNotif.status = req.body.status;
+    newNotif.threshold = req.body.threshold;
+
+    newNotif.save(function(err){
+        if (err) throw err;
+        Notificationv2.find({},function(err,notifs){
+            if (err) throw err;
+            res.status(200).send(notifs);
+        })
+    })
+
+})
 
 
 app.listen(process.env.PORT || 8081);

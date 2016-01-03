@@ -19,12 +19,31 @@ this.newChainsByDay = function() {
 
 }
 
+this.newChainsV2ByDay = function() {
+  var deferred = $q.defer();
+  $http({
+    method: 'GET',
+    url: 'http://chain-backoffice.elasticbeanstalk.com/chains/newChainsV2ByDay',
+    //url: 'http://localhost:8081/chains/newChainsV2ByDay',
+    headers: {'Content-type':'application/json'}
+  }).
+  success(function (data, status, headers, config) {
+    deferred.resolve(data);
+  }).
+  error(function (data, status) {
+    deferred.reject(data);
+  });
+
+  return deferred.promise;
+
+}
+
     this.fetch = function() {
         var deferred = $q.defer();
         $http({
             method: 'GET',
-            url: 'http://chain-backoffice.elasticbeanstalk.com/v2/chains/0/10',
-            //url: 'http://localhost:8081/v2/chains/0/10',
+            url: 'http://chain-backoffice.elasticbeanstalk.com/v2/chains/0/100',
+            //url: 'http://localhost:8081/v2/chains/0/100',
             headers: {'Content-type':'application/json'}
         }).
             success(function (data, status, headers, config) {

@@ -1,7 +1,9 @@
-appControllers.controller('settingsCtrl', ['$scope','$http','chainService','notificationService','$filter','$timeout',function SettingsCtrl($scope,$http,chainService,notificationService,$filter,$timeout) {
+appControllers.controller('settingsCtrl', ['$scope','$http','chainService','notificationService','tagService','$filter','$timeout','$uibModal','Upload',function SettingsCtrl($scope,$http,chainService,notificationService,tagService,$filter,$timeout,$uibModal,Upload) {
 
 $scope.alerts = [];
 $scope.tags = [];
+$scope.reorderedTags = [];
+$scope.forbiddens = [];
 $scope.notifs = [];
 $scope.types = [];
 $scope.isDisabled = true;
@@ -14,11 +16,11 @@ $scope.initForbiddens = function(){
 
         console.log("getForbiddens chains result is :");
         console.log(res);
-        $scope.tags = res;
+        $scope.forbiddens = res;
     })
 }
 $scope.initNotifications = function(){
-    notificationService.fetchNotifications().then(function(notifs){
+    notificationService.fetch().then(function(notifs){
 
         console.log("notifications chains result is :");
         console.log(notifs);
@@ -30,8 +32,16 @@ $scope.initNotifications = function(){
         }
     })
 }
+$scope.initTags = function(){
+    tagService.fetch().then(function(tags){
+
+        console.log("tags  result is :");
+        $scope.tags = tags;
+    })
+}
 $scope.initForbiddens();
 $scope.initNotifications();
+$scope.initTags();
 
 $scope.add = function(){
         console.log("adding tag "+$scope.tag);
@@ -46,7 +56,7 @@ $scope.add = function(){
 $scope.addNotif = function(){
         console.log("adding notif "+$scope.message,$scope.type,$scope.lang);
         
-        notificationService.addNotification($scope.message,$scope.type,$scope.lang).then(function(res){
+        notificationService.create($scope.message,$scope.type,$scope.lang).then(function(res){
             $scope.alerts.push({title:'Notification '+$scope.message});
             $timeout(function(){ $scope.alerts.splice(0,1);console.log("timeout"); }, 2000);
             $scope.initNotifications();
@@ -75,5 +85,98 @@ $scope.editNotif = function(){
             $scope.lang = '';
         })
     }
+
+$scope.move = function(item,from,to,indexFrom,indexTo){
+  console.log(item);
+  console.log(from);
+  console.log(to);
+  console.log(indexFrom);
+  console.log(indexTo);
+  $scope.reorderedTags = [];
+  for (var i = 0 ; i < to.length ; i++){
+    var tag = to[i];
+    tag.priority = i;
+    $scope.reorderedTags.push(to[i]);
+  }
+}
+
+$scope.reorder = function(){
+  for (var i = 0 ; i < $scope.reorderedTags.length ; i++){
+    //tagService.update($scope.reorderedTags[i]);
+    console.log($scope.reorderedTags[i]);
+    tagService.update($scope.reorderedTags[i]);
+  }
+}
+
+
+$scope.animationsEnabled = true;
+
+  $scope.openTag = function (tag) {
+
+    var modalInstance = $uibModal.open({
+      animation: $scope.animationsEnabled,
+      templateUrl: 'tagModal.html',
+      controller: 'TagInstanceCtrl',
+      tag: tag,
+      resolve: {
+        tag: function () {
+          return tag;
+        },
+        controllerScope : function(){
+          return $scope;
+        }
+      }
+    });
+
+    modalInstance.result.then(function (selectedItem) {
+      $scope.selected = selectedItem;
+    }, function () {
+      console.log('Modal dismissed at: ' + new Date());
+    });
+  };
+
+  $scope.toggleAnimation = function () {
+    $scope.animationsEnabled = !$scope.animationsEnabled;
+  };
+
+}]);
+
+appControllers.controller('TagInstanceCtrl', ['$scope','$uibModalInstance','tag','Upload','tagService',function TagInstanceCtrl($scope, $uibModalInstance, tag,controllerScope,Upload,tagService) {
+
+  //$scope.items = items;
+  // $scope.selected = {
+  //   item: $scope.items[0]
+  // };
+
+  $scope.tag = tag;
+  $scope.tagLabel = "";
+  $scope.priority = 0;
+  $scope.url = "";
+
+  $scope.ok = function () {
+    $uibModalInstance.close(tag);
+    var tag = {};
+    tag.tag = $scope.tagLabel;
+    tag.url = $scope.url;
+    tag.priority = $scope.priority;
+
+    tagService.create(tag).then(function(tags){
+      controllerScope.tags = tags;
+    })
+  };
+
+  $scope.cancel = function () {
+    $uibModalInstance.dismiss('cancel');
+  };
+
+  $scope.alerts = [];
+
+
+
+    
+    
+
+
+
 
 }]);
