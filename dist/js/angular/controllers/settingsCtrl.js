@@ -32,11 +32,21 @@ $scope.initNotifications = function(){
         }
     })
 }
+
+function compareTags(a,b) {
+  if (a.priority < b.priority)
+    return -1;
+  if (a.priority > b.priority)
+    return 1;
+  return 0;
+}
+
+
 $scope.initTags = function(){
     tagService.fetch().then(function(tags){
 
         console.log("tags  result is :");
-        $scope.tags = tags;
+        $scope.tags = tags.sort(compareTags);
     })
 }
 $scope.initForbiddens();

@@ -264,7 +264,7 @@
                      <a class="btn-ghost btn-medium btn-green btn-radius col-xs-5" href="#" ng-click="openTag(null)">Ajouter un tag</a>
                      <a class="btn-ghost btn-medium btn-blue btn-radius col-xs-5" href="#" ng-click="reorder()">R&eacute;organiser</a>
                   </div>
-                    <div ng-repeat="tag in tags | orderBy:'priority'" sv-element class="col-xs-6 grid" >
+                    <div ng-repeat="tag in tags" sv-element class="col-xs-6 grid" >
                       <img ng-src="{{tag.s3_picture_url}}" draggable="false" width="100%" height="100%" />              
                     </div>
                   </div>

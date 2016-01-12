@@ -841,7 +841,7 @@ chainModel.aggregate(
 
 app.get('/chains/chainersByChain',function(req,res){
 
-chainModel.aggregate({
+Chainv2.aggregate({
     $unwind: "$chainers"
 },
 {
@@ -999,6 +999,16 @@ app.get('/notifications',function(req,res){
 
 })
 
+app.get('/v2/notifications',function(req,res){
+
+    Notificationv2.find({},function(err,notifs){
+        if (err) throw err;
+        res.writeHead(200, {"Content-Type": "application/json"});
+        res.end(JSON.stringify(notifs));
+    })
+
+})
+
 app.put('/notifications/:id',function(req,res){
 
     var notifId = req.params.id;
@@ -1046,6 +1056,102 @@ app.post('/notifications',function(req,res){
 
 })
 
+
+
+app.get('/retention/:start/:end',function(req,res){
+    var start = req.params.start;
+    var end = req.params.end;
+    var a = moment(start);
+    var b = moment(end);
+    var result = [];
+    var moments = [];
+
+    for (var m = a; m.isBefore(b); m.add('days', 1)) {
+      moments.push(m.format('YYYY-MM-DD'));
+    }
+    //moments.push(m.format('YYYY-MM-DD'));
+
+    async.eachSeries(moments,function(day,callback){
+        var dayMinus30 = moment(new Date(day)).add('days',-30);
+        var dayMinus29 = moment(new Date(day)).add('days',-29);
+
+        var dayMinus7 = moment(new Date(day)).add('days',-7);
+        var dayMinus6 = moment(new Date(day)).add('days',-6);
+
+        var dayMinus1 = moment(new Date(day)).add('days',-1);
+        var current = new Date(day);
+
+        var next = moment(new Date(day)).add('days',1);
+
+        User.find({"created_at": {"$gte": new Date(dayMinus30),"$lte": new Date(dayMinus29)}},'_id created_at',function (err, users) {
+            if (err) { throw err; }
+            var users30 = users;
+            var userIds = []
+            for (var i = 0 ; i < users.length ; i++){
+                userIds.push(users[i]._id);
+            }
+
+            Stats.find({user_id:{$in:userIds},date:{"$gte": new Date(current),"$lte": new Date(next)}}).distinct('user_id',function(err,distincts){
+                if (err) throw err;
+                var stats30 = distincts;
+
+                User.find({"created_at": {"$gte": new Date(dayMinus7),"$lte": new Date(dayMinus6)}},'_id created_at',function (err, users) {
+                    if (err) { throw err; }
+                    var users7 = users;
+                    var userIds = []
+                    for (var i = 0 ; i < users.length ; i++){
+                        userIds.push(users[i]._id);
+                    }
+
+                    Stats.find({user_id:{$in:userIds},date:{"$gte": new Date(current),"$lte": new Date(next)}}).distinct('user_id',function(err,distincts){
+                        if (err) throw err;
+                        var stats7 = distincts;
+
+                        User.find({"created_at": {"$gte": new Date(dayMinus1),"$lte": new Date(current)}},'_id created_at',function (err, users) {
+                            if (err) { throw err; }
+                            var users1 = users;
+                            for (var i = 0 ; i < users.length ; i++){
+                                userIds.push(users[i]._id);
+                            }
+
+                            Stats.find({user_id:{$in:userIds},date:{"$gte": new Date(current),"$lte": new Date(next)}}).distinct('user_id',function(err,distincts){
+                                if (err) throw err;
+                                var stats1 = distincts;
+
+                                var metric = {date:day};
+
+                                if (users30.length > 0){
+                                    metric.retention30 = 100*parseFloat(stats30.length/users30.length).toFixed(2);
+                                }else{
+                                    metric.retention30 = null;
+                                }
+                                if (users7.length > 0){
+                                    metric.retention7 = 100*parseFloat(stats7.length/users7.length).toFixed(2);
+                                }else{
+                                    metric.retention7 = null;
+                                }
+                                if (users1.length > 0){
+                                    metric.retention1 = 100*parseFloat(stats1.length/users1.length).toFixed(2);
+                                }else{
+                                    metric.retention1 = null;
+                                }
+                                if (metric.retention1 || metric.retention7 || metric.retention30){
+                                    result.push(metric);
+                                }      
+                                callback();
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    },function(err){
+        //res.writeHead(200, {"Content-Type": "application/json"});
+        res.status(200).send(result);
+    })
+    
+
+})
 
 app.get('/v2/tags',function(req,res){
 

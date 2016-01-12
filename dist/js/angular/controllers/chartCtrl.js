@@ -1,4 +1,4 @@
-appControllers.controller('chartCtrl', ['$scope','$http','userService','subscriberService','facebookService','twitterService','instagramService','eventService','chainService','NgMap',function ChartCtrl($scope,$http,userService,subscriberService,facebookService,twitterService,instagramService,eventService,chainService,NgMap) {
+appControllers.controller('chartCtrl', ['$scope','$http','userService','subscriberService','facebookService','twitterService','instagramService','eventService','chainService','NgMap','usSpinnerService',function ChartCtrl($scope,$http,userService,subscriberService,facebookService,twitterService,instagramService,eventService,chainService,NgMap,usSpinnerService) {
 
 $scope.title="Insights";
 // var salesChartCanvas = document.getElementById("salesChart").getContext("2d");
@@ -8,6 +8,8 @@ $scope.title="Insights";
 // var typeChartCanvas = document.getElementById("typeChart").getContext("2d");
 // var typeChart = new Chart(typeChartCanvas);
 $scope.events = [];
+$scope.showSpinnerRetention = true;
+$scope.showSpinnerGrowth = true;
 
 $scope.dataAmCharts = null;
 
@@ -155,7 +157,7 @@ userService.newUsersByDay().then(function(res){
                 for (var i = 0 ; i < res.length ; i++){
                     sum+=(res[i].frequency * (res[i].chainers+1));
                 }
-                $scope.chainersByChain = (parseFloat((sum / $scope.chains))).toFixed(2);
+                $scope.chainersByChain = (parseFloat((sum / res.length))).toFixed(2);
             });
 
             chainService.chainsByChainer().then(function(res){
@@ -368,6 +370,188 @@ appControllers.directive('lineChart',['userService','chainService',
        }
    }]);
 
+
+appControllers.directive('retentionChart',['userService','chainService','$q',
+   function (userService,chainService,$q) {
+       return {
+           restrict: 'E',
+           replace:true,
+           scope: false,
+           template: '<div id="chartretention" style="min-width: 310px; height: 400px; margin: 0 auto"></div>',
+           link: function (scope, element, attrs) {
+
+                var chart = false;
+
+
+                    var initChart = function(data) {
+                      if (chart) chart.destroy();
+                      var config = scope.config || {};
+                       chart = AmCharts.makeChart("chartretention", {
+                            "type": "serial",
+                            "theme": "light",
+                            "marginLeft": 20,
+                            "pathToImages": "http://www.amcharts.com/lib/3/images/",
+                            "dataProvider": data,
+                            "legend": {
+                                "useGraphSettings": true
+                            },
+                            "valueAxes": [{
+                                "id": "v1",
+                                "axisAlpha": 0,
+                                "inside": true,
+                                "position": "left",
+                                "ignoreAxisWidth": true
+                            },{
+                                "id": "v2",
+                                "axisAlpha": 0,
+                                "inside": true,
+                                "position": "right",
+                                "ignoreAxisWidth": true
+                            }],
+                            "graphs": [{
+                                "balloonText": "[[category]]<br><b><span style='font-size:10px;'>Rétention 30 jours : [[value]]%</span></b>",
+                                "lineColor": "#00544D",
+                                "negativeLineColor": "#00544D",
+                                "type": "column",
+                                "valueField": "retention30",
+                                "valueAxes": "v1",
+                                "title" : "Rétention 30 jours",
+                                "fillAlphas": 0.4
+                            },{
+                                "balloonText": "[[category]]<br><b><span style='font-size:10px;'>Rétention 7 jours : [[value]]%</span></b>",
+                                "lineColor": "#008D80",
+                                "negativeLineColor": "#008D80",
+                                "type": "column",
+                                "valueField": "retention7",
+                                "valueAxes": "v1",
+                                "title" : "Rétention 7 jours",
+                                "fillAlphas": 0.4
+                            },{
+                                "balloonText": "[[category]]<br><b><span style='font-size:10px;'>Rétention 1 jour : [[value]]%</span></b>",
+                                "lineColor": "#00C5B3",
+                                "negativeLineColor": "#00C5B3",
+                                "type": "column",
+                                "valueField": "retention1",
+                                "valueAxes": "v1",
+                                "title" : "Rétention 1 jour",
+                                "fillAlphas": 0.4
+                            }],
+                            "chartScrollbar": {},
+                            "chartCursor": {
+                                "categoryBalloonDateFormat": "YYYY-MM-DD",
+                                "cursorAlpha": 0,
+                                "cursorPosition": "mouse"
+                                 
+                            },
+                            "dataDateFormat": "YYYY-MM-DD",
+                            "categoryField": "date",
+                            "categoryAxis": {
+                                "minPeriod": "DD",
+                                "parseDates": true,
+                                "minorGridAlpha": 0.1,
+                                "minorGridEnabled": true
+                            }
+                        })
+                    }
+                    //initChart();
+
+                    var now = new Date(Date.now());
+                        var day = now.getDate();
+                        var month = now.getMonth()+1;
+                        var year = now.getFullYear();
+                            if (month <= 9){
+                            month = "0"+month;
+                        }
+                        if (day <= 9){
+                            day = "0"+day;
+                        }
+                    var daysOfYear = [];
+                    var daysOfYearNext = [];
+                    var dataset = [];
+                     userService.retention("2015-12-22",year+"-"+month+"-"+day).then(function(res){
+                            scope.showSpinnerRetention = false;
+                            initChart(res);
+                            console.log(res);
+                            var avg = [0,0,0];
+                            var cpt = [0,0,0];
+                            for (var i = 0 ; i < res.length ; i++){
+                                if (res[i].retention1 != null){
+                                    cpt[0]=cpt[0]+1;
+                                    avg[0]=avg[0]+res[i].retention1;
+                                }
+                                if (res[i].retention7 != null){
+                                    cpt[1]=cpt[1]+1;
+                                    avg[1]=avg[1]+res[i].retention7;
+                                }
+                                if (res[i].retention30 != null){
+                                    cpt[2]=cpt[2]+1;
+                                    avg[2]=avg[2]+res[i].retention30;
+                                }
+                            }
+                            console.log(avg);
+                            console.log(cpt);
+                            scope.retention1Day = parseFloat(avg[0]/cpt[0]).toFixed(2);
+                            scope.retention7Days = parseFloat(avg[1]/cpt[1]).toFixed(2);
+                            scope.retention30Days = parseFloat(avg[2]/cpt[2]).toFixed(2);
+                        })
+
+
+                    // for (var d = new Date(2015, 8, 2); d <= now; d.setDate(d.getDate() + 1)) {
+                        
+                    //     var date = new Date(d);
+                    //     var day = date.getDate();
+                    //     var month = date.getMonth()+1;
+                    //     var year = date.getFullYear();
+
+                    //     var next = new Date(d.setDate(d.getDate() + 1));
+                        
+                    //     var dayNext = next.getDate();
+                    //     var monthNext = next.getMonth()+1;
+                    //     var yearNext = next.getFullYear();
+                    //     if (month <= 9){
+                    //         month = "0"+month;
+                    //     }
+                    //     if (monthNext <= 9){
+                    //         monthNext = "0"+monthNext;
+                    //     }
+                    //     if (day <= 9){
+                    //         day = "0"+day;
+                    //     }
+                    //     if (dayNext <= 9){
+                    //         dayNext = "0"+dayNext;
+                    //     }
+                      
+                    //     daysOfYear.push(year+"-"+month+"-"+day);
+                    //     daysOfYearNext.push(yearNext+"-"+monthNext+"-"+dayNext);
+                        
+                    //     // userService.retention().then(function(res){
+
+                    //     // });
+                    // }
+
+                    // var promise = $q.all(null);
+
+                    //   angular.forEach(daysOfYear.sort(), function(day){
+                    //     promise = promise.then(function(){
+                    //       userService.retention(day,daysOfYearNext.sort()[daysOfYear.sort().indexOf(day)]).then(function(res){
+                    //         console.log(day,daysOfYearNext[daysOfYear.indexOf(day)]);
+                    //             chart.dataProvider.push(res[0]);
+                    //             chart.validateData();
+                    //         })
+                    //     });
+                    //   });
+
+                    //   promise.then(function(){
+                    //     //This is run after all of your HTTP requests are done
+                    //     console.log("done all promises")
+                    //     //$scope.doneLoading = true;
+                    //   })
+                    
+                }
+           }         
+   }]);
+
+
 appControllers.directive('donutChart',['userService','chainService',
    function (userService,chainService) {
        return {
@@ -385,7 +569,7 @@ appControllers.directive('donutChart',['userService','chainService',
 
                 chainService.chainsByType().then(function(res){
                     //console.log(res);
-
+                    console.log(res);
                     for (var i = 0 ; i < res.length ; i++){
                         if (res[i]._id == "PRIVATE"){
                             res[i].color = "#4A4A4A";
@@ -432,18 +616,14 @@ appControllers.directive('areaChart',['userService','chainService',
        return {
            restrict: 'E',
            replace:true,
-           scope: {
-                // bi directional binding will pass data array to isolated scope
-                data: '=',
-                title: '@'
-            },
+           scope: false,
            template: '<div id="chartarea" style="min-width: 210px; height: 300px; margin: 0 auto"></div>',
            link: function (scope, element, attrs) {
 
                 var chart = false;
 
                 userService.runningUsers().then(function(res){
-
+                    scope.showSpinnerGrowth = false;
                     var usersGrowthData = [];
                     var usersGrowthLabels = [];
                     // var percentGrowth = 0;

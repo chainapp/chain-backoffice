@@ -4,8 +4,8 @@ appServices.service('tagService', function ($rootScope,$http,$q) {
         var deferred = $q.defer();
         $http({
             method: 'GET',
-            url: 'http://chain-backoffice.elasticbeanstalk.com/v2/tags',
-            //url: 'http://localhost:8081/v2/tags',
+            //url: 'http://chain-backoffice.elasticbeanstalk.com/v2/tags',
+            url: 'http://localhost:8081/v2/tags',
             headers: {'Content-type':'application/json'}
         }).
             success(function (data, status, headers, config) {
@@ -45,7 +45,7 @@ appServices.service('tagService', function ($rootScope,$http,$q) {
         var deferred = $q.defer();
         $http({
             method: 'PUT',
-            url: 'http://chain-backoffice.elasticbeanstalk.com/v2/tags/'+tag._id,,
+            url: 'http://chain-backoffice.elasticbeanstalk.com/v2/tags/'+tag._id,
             //url: 'http://localhost:8081/v2/tags/'+tag._id,
             headers: {
                 'Content-type':'application/json'

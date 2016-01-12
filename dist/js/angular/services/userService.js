@@ -76,6 +76,25 @@ this.newUsersByDay = function() {
 
     }
 
+    this.retention = function(start,end) {
+        var deferred = $q.defer();
+        $http({
+            method: 'GET',
+            url: 'http://chain-backoffice.elasticbeanstalk.com/retention/start/end',
+            //url: 'http://localhost:8081/retention/'+start+'/'+end,
+            headers: {'Content-type':'application/json'}
+        }).
+            success(function (data, status, headers, config) {
+                deferred.resolve(data);
+            }).
+            error(function (data, status) {
+                deferred.reject(data);
+            });
+
+        return deferred.promise;
+
+    }
+
 
 this.count = function() {
   var deferred = $q.defer();

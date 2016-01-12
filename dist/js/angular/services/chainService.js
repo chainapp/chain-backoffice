@@ -215,7 +215,7 @@ this.delete = function(chainId) {
         var deferred = $q.defer();
         $http({
             method: 'DELETE',
-            url: 'http://chain-qlf.elasticbeanstalk.com/v2/chains/'+chainId,
+            url: 'http://chain-backoffice.elasticbeanstalk.com/v2/chains/'+chainId,
             //url: 'http://localhost:8081/v2/chains/'+chainId,
             headers: {'Content-type':'application/json'}
         }).
